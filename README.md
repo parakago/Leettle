@@ -63,8 +63,8 @@ using (var con = leettleDb.OpenConnection())
 ## Installation
 * install LeettleDB package through nuget.
 * install ado.net data provider that what you want. (following data providers were tested)
-  * Oracle
-  * MySql
-  * PostgreSQL
-  * SQLite
-  * SQL Server
+  * Oracle (Oracle.ManagedDataAccess)
+  * MySql (Mysql.Data)
+  * PostgreSQL (Npgsql)
+  * SQLite (System.Data.SQLite.Core)
+  * SQL Server (System.Data.SqlClient)
