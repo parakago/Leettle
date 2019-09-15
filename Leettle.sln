@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0F361FA5-DF2
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{FC31A245-0D4F-46DC-8442-3D56C31FB8A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leettle.Data.test", "test\Leettle.Data.test\Leettle.Data.Test.csproj", "{9D600050-0747-4C85-99CD-5090024E6E10}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leettle.Data.Test", "test\Leettle.Data.test\Leettle.Data.Test.csproj", "{9D600050-0747-4C85-99CD-5090024E6E10}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leettle.Data", "src\Leettle.Data\Leettle.Data.csproj", "{0AD16018-916A-4B12-959F-A99EAA8C1DA3}"
 EndProject

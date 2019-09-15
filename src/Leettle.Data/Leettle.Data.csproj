@@ -41,15 +41,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assert.cs" />
     <Compile Include="Donkey.cs" />
+    <Compile Include="DonkeyBuilder.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="IConnection.cs" />
     <Compile Include="IDataset.cs" />
+    <Compile Include="Impl\AbstractQuery.cs" />
     <Compile Include="Impl\Command.cs" />
     <Compile Include="Impl\Connection.cs" />
     <Compile Include="Impl\Dataset.cs" />
+    <Compile Include="Impl\DonkeyImpl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlException.cs" />
+    <Compile Include="Util.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

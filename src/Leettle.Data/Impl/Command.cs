@@ -4,42 +4,21 @@ using System.IO;
 
 namespace Leettle.Data.Impl
 {
-    class Command : ICommand, IDisposable
+    class Command : AbstractQuery, ICommand, IDisposable
     {
-        private DbCommand dbCmd;
-        public Command(DbCommand dbCmd)
+        public Command(DbCommand dbCommand) : base(dbCommand)
         {
-            this.dbCmd = dbCmd;
-        }
-
-        public void Dispose()
-        {
-            dbCmd.Dispose();
+            
         }
 
         public int Execute()
         {
-            try
-            {
-                int affected = dbCmd.ExecuteNonQuery();
-
-                dbCmd.Parameters.Clear();
-
-                return affected;
-            }
-            catch (Exception e)
-            {
-                throw SqlException.Wrap(e, dbCmd);
-            }
+            return ExecuteNonQuery();
         }
 
         public ICommand SetParam(string paramName, object paramValue)
         {
-            var dbParam = dbCmd.CreateParameter();
-            dbParam.ParameterName = paramName;
-            dbParam.Value = paramValue == null ? DBNull.Value : paramValue;
-            dbCmd.Parameters.Add(dbParam);
-            return this;
+            return (ICommand)AddParam(paramName, paramValue);
         }
 
         public ICommand SetParam(string paramName, Stream paramValue)

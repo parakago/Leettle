@@ -4,13 +4,12 @@ using System.IO;
 
 namespace Leettle.Data.Impl
 {
-    class Dataset : IDataset
+    class Dataset : AbstractQuery, IDataset, IDisposable
     {
-        private DbCommand dbCmd;
         private DbDataReader dbDataReader;
-        public Dataset(DbCommand dbCmd)
+        public Dataset(DbCommand dbCommand) : base(dbCommand)
         {
-            this.dbCmd = dbCmd;
+            
         }
 
         public bool Next()
@@ -20,33 +19,18 @@ namespace Leettle.Data.Impl
 
         public void Open()
         {
-            try
-            {
-                dbDataReader = dbCmd.ExecuteReader();
-            }
-            catch (Exception e)
-            {
-                throw SqlException.Wrap(e, dbCmd);
-            }
+            dbDataReader = ExecuteReader();
         }
 
         public IDataset SetParam(string paramName, object paramValue)
         {
-            var dbParam = dbCmd.CreateParameter();
-            dbParam.ParameterName = paramName;
-            dbParam.Value = paramValue;
-            dbCmd.Parameters.Add(dbParam);
-            return this;
+            return (IDataset)AddParam(paramName, paramValue);
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
-            if (dbDataReader != null)
-            {
-                dbDataReader.Close();
-            }
-
-            dbCmd.Dispose();
+            Util.DisposeSilently(dbDataReader);
+            base.Dispose();
         }
 
         private DbDataReader CheckDataReader()
@@ -106,8 +90,7 @@ namespace Leettle.Data.Impl
 
         public string GetString(string colName)
         {
-            object value = GetObject(colName);
-            return value == null ? null : Convert.ToString(value);
+            return Convert.ToString(GetObject(colName));
         }
     }
 }
