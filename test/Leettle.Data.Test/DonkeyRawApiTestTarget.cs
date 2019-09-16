@@ -45,17 +45,14 @@ namespace Leettle.Data.Test
 
         public void Run()
         {
-            var donkey = new DonkeyBuilder()
+            var leettleDb = new LeettleDbBuilder()
                 .WithConnectionString(ConnectionString)
                 .WithConnectionType(DbConnectionType)
                 .Build();
             
-            using (var con = donkey.OpenConnection())
+            using (var con = leettleDb.OpenConnection())
             {
-                using (var command = con.NewCommand(ToProperSql(SqlCreateTable)))
-                {
-                    command.Execute();
-                }
+                con.NewCommand(ToProperSql(SqlCreateTable)).Execute();
 
                 try
                 {
@@ -70,22 +67,20 @@ namespace Leettle.Data.Test
                     MemoryStream vBlob2 = new MemoryStream(vBlob1);
                     string vLongText = SqlCreateTable;
 
-                    using (var command = con.NewCommand(ToProperSql(SqlInsertInto)))
-                    {
-                        command.SetParam("v_string", vString)
-                            .SetParam("v_short", vShort)
-                            .SetParam("v_int", vInt)
-                            .SetParam("v_long", vLong)
-                            .SetParam("v_double", vDouble)
-                            .SetParam("v_decimal", vDecimal)
-                            .SetParam("v_datetime", vDateTime)
-                            .SetParam("v_blob1", vBlob1)
-                            .SetParam("v_blob2", vBlob2)
-                            .SetParam("v_long_text", vLongText)
-                            .Execute();
-                    }
+                    con.NewCommand(ToProperSql(SqlInsertInto))
+                        .SetParam("v_string", vString)
+                        .SetParam("v_short", vShort)
+                        .SetParam("v_int", vInt)
+                        .SetParam("v_long", vLong)
+                        .SetParam("v_double", vDouble)
+                        .SetParam("v_decimal", vDecimal)
+                        .SetParam("v_datetime", vDateTime)
+                        .SetParam("v_blob1", vBlob1)
+                        .SetParam("v_blob2", vBlob2)
+                        .SetParam("v_long_text", vLongText)
+                        .Execute();
 
-                    using (var dataset = con.NewDataset(ToProperSql(string.Format("SELECT * FROM {0} WHERE v_string = :v_string", TEST_TABLE_NAME))))
+                    using (var dataset = con.NewRawDataset(ToProperSql(string.Format("SELECT * FROM {0} WHERE v_string = :v_string", TEST_TABLE_NAME))))
                     {
                         dataset.SetParam("v_string", vString).Open();
 
@@ -113,10 +108,7 @@ namespace Leettle.Data.Test
                 }
                 finally
                 {
-                    using (var command = con.NewCommand(ToProperSql(SqlDropTable)))
-                    {
-                        command.Execute();
-                    }
+                    con.NewCommand(ToProperSql(SqlDropTable)).Execute();
                 }
             }
         }

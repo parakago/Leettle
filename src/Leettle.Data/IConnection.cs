@@ -8,6 +8,7 @@ namespace Leettle.Data
 
     public interface IConnection : IDisposable
     {
+        IRawDataset NewRawDataset(string sql);
         IDataset NewDataset(string sql);
         ICommand NewCommand(string sql);
         void RunInTransaction(TransactionJob job);

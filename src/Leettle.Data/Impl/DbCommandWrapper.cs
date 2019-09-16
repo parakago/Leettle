@@ -3,10 +3,10 @@ using System.Data.Common;
 
 namespace Leettle.Data.Impl
 {
-    class AbstractQuery : IDisposable
+    class DbCommandWrapper : IDisposable
     {
         private DbCommand dbCommand;
-        public AbstractQuery(DbCommand dbCommand)
+        public DbCommandWrapper(DbCommand dbCommand)
         {
             this.dbCommand = dbCommand;
         }
@@ -16,7 +16,7 @@ namespace Leettle.Data.Impl
             Util.DisposeSilently(dbCommand);
         }
 
-        protected AbstractQuery AddParam(string paramName, object paramValue)
+        public DbCommandWrapper AddParam(string paramName, object paramValue)
         {
             var dbParam = dbCommand.CreateParameter();
             dbParam.ParameterName = paramName;
@@ -25,7 +25,7 @@ namespace Leettle.Data.Impl
             return this;
         }
 
-        protected int ExecuteNonQuery()
+        public int ExecuteNonQuery()
         {
             try
             {
@@ -41,7 +41,7 @@ namespace Leettle.Data.Impl
             }
         }
 
-        protected DbDataReader ExecuteReader()
+        public DbDataReader ExecuteReader()
         {
             try
             {

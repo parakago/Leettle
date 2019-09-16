@@ -30,14 +30,24 @@ namespace Leettle.Data.Impl
             return dbCmd;
         }
 
-        public ICommand NewCommand(string sql)
+        private DbCommandWrapper CreateDbCommandWrapper(string sql)
         {
-            return new Command(CreateDbCommand(sql));
+            return new DbCommandWrapper(CreateDbCommand(sql));
+        }
+
+        public IRawDataset NewRawDataset(string sql)
+        {
+            return new RawDataset(CreateDbCommand(sql));
         }
 
         public IDataset NewDataset(string sql)
         {
-            return new Dataset(CreateDbCommand(sql));
+            return new Dataset(CreateDbCommandWrapper(sql));
+        }
+
+        public ICommand NewCommand(string sql)
+        {
+            return new Command(CreateDbCommandWrapper(sql));
         }
 
         public void RunInTransaction(TransactionJob transactionJob)

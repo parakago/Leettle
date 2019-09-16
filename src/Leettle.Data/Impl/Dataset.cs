@@ -1,96 +1,90 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Common;
-using System.IO;
+using System.Reflection;
 
 namespace Leettle.Data.Impl
 {
-    class Dataset : AbstractQuery, IDataset, IDisposable
+    class Dataset : IDataset
     {
-        private DbDataReader dbDataReader;
-        public Dataset(DbCommand dbCommand) : base(dbCommand)
+        private DbCommandWrapper dbCommand;
+        public Dataset(DbCommandWrapper dbCommand)
         {
-            
-        }
-
-        public bool Next()
-        {
-            return CheckDataReader().Read();
-        }
-
-        public void Open()
-        {
-            dbDataReader = ExecuteReader();
+            this.dbCommand = dbCommand;
         }
 
         public IDataset SetParam(string paramName, object paramValue)
         {
-            return (IDataset)AddParam(paramName, paramValue);
+            dbCommand.AddParam(paramName, paramValue);
+            return this;
         }
 
-        public override void Dispose()
+        private Dictionary<int, PropertyInfo> ExtractFieldMappingInfo<T>(DbDataReader dbDataReader)
         {
-            Util.DisposeSilently(dbDataReader);
-            base.Dispose();
-        }
+            var fieldMappingInfo = new Dictionary<int, PropertyInfo>(dbDataReader.FieldCount);
 
-        private DbDataReader CheckDataReader()
-        {
-            if (dbDataReader == null)
+            for (int i = 0; i < dbDataReader.FieldCount; ++i)
             {
-                throw new Exception("open dataset first");
+                string fieldName = dbDataReader.GetName(i);
+                PropertyInfo propInfo = typeof(T).GetProperty(fieldName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+                if (propInfo == null)
+                {
+                    fieldMappingInfo.Add(i, propInfo);
+                }
             }
-            return dbDataReader;
+
+            return fieldMappingInfo;
         }
 
-        public object GetObject(string colName)
+        private T Fetch<T>(DbDataReader dbDataReader, Dictionary<int, PropertyInfo> fieldMappingInfo) where T : class, new()
         {
-            return CheckDataReader()[colName];
+            T target = (T)Activator.CreateInstance(typeof(T));
+            foreach (var pair in fieldMappingInfo)
+            {
+                int columnIndex = pair.Key;
+                object columnValue = dbDataReader.IsDBNull(columnIndex) ? null : dbDataReader.GetValue(columnIndex);
+                if (columnValue != null)
+                {
+                    PropertyInfo propertyInfo = pair.Value;
+                    propertyInfo.SetValue(target, columnValue);
+                }
+            }
+            return target;
         }
 
-        public DateTime GetDateTime(string colName)
+        public T OpenAndFetch<T>() where T : class, new()
         {
-            return Convert.ToDateTime(GetObject(colName));
+            using (DbDataReader dbDataReader = dbCommand.ExecuteReader())
+            {
+                if (dbDataReader.Read())
+                {
+                    var fieldMappingInfo = ExtractFieldMappingInfo<T>(dbDataReader);
+                    return Fetch<T>(dbDataReader, fieldMappingInfo);
+                }
+                else
+                {
+                    return null;
+                }
+            }
         }
 
-        public decimal GetDecimal(string colName)
+        public List<T> OpenAndFetchList<T>() where T : class, new()
         {
-            return Convert.ToDecimal(GetObject(colName));
-        }
+            using (DbDataReader dbDataReader = dbCommand.ExecuteReader())
+            {
+                Dictionary<int, PropertyInfo> fieldMappingInfo = null;
 
-        public double GetDouble(string colName)
-        {
-            return Convert.ToDouble(GetObject(colName));
-        }
-
-        public int GetInt(string colName)
-        {
-            return Convert.ToInt32(GetObject(colName));
-        }
-
-        public long GetLong(string colName)
-        {
-            return Convert.ToInt64(GetObject(colName));
-        }
-
-        public short GetShort(string colName)
-        {
-            return Convert.ToInt16(GetObject(colName));
-        }
-
-        public void GetStream(string colName, Stream stream)
-        {
-            byte[] bytes = (byte[])GetObject(colName);
-            stream.Write(bytes, 0, bytes.Length);
-        }
-
-        public byte[] GetBytes(string colName)
-        {
-            return (byte[])GetObject(colName);
-        }
-
-        public string GetString(string colName)
-        {
-            return Convert.ToString(GetObject(colName));
+                List<T> list = new List<T>();
+                while (dbDataReader.Read())
+                {
+                    if (fieldMappingInfo == null)
+                    {
+                        fieldMappingInfo = ExtractFieldMappingInfo<T>(dbDataReader);
+                    }
+                    list.Add(Fetch<T>(dbDataReader, fieldMappingInfo));
+                }
+                return list;
+            }    
         }
     }
 }

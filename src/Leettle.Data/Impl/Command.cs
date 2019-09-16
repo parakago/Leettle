@@ -4,21 +4,23 @@ using System.IO;
 
 namespace Leettle.Data.Impl
 {
-    class Command : AbstractQuery, ICommand, IDisposable
+    class Command : ICommand
     {
-        public Command(DbCommand dbCommand) : base(dbCommand)
+        DbCommandWrapper dbCommand;
+        public Command(DbCommandWrapper dbCommand)
         {
-            
+            this.dbCommand = dbCommand;
         }
 
         public int Execute()
         {
-            return ExecuteNonQuery();
+            return dbCommand.ExecuteNonQuery();
         }
 
         public ICommand SetParam(string paramName, object paramValue)
         {
-            return (ICommand)AddParam(paramName, paramValue);
+            dbCommand.AddParam(paramName, paramValue);
+            return this;
         }
 
         public ICommand SetParam(string paramName, Stream paramValue)

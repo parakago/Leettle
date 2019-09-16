@@ -1,6 +1,6 @@
 ﻿namespace Leettle.Data
 {
-    public interface Donkey
+    public interface LeettleDb
     {
         IConnection OpenConnection();
     }

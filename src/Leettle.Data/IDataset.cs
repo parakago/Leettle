@@ -1,22 +1,12 @@
 ﻿using System;
-using System.IO;
+using System.Collections.Generic;
 
 namespace Leettle.Data
 {
-    public interface IDataset : IDisposable
+    public interface IDataset
     {
-        void Open();
-        bool Next();
+        T OpenAndFetch<T>() where T : class, new();
+        List<T> OpenAndFetchList<T>() where T : class, new();
         IDataset SetParam(String paramName, object paramValue);
-        object GetObject(string colName);
-        string GetString(string colName);
-        short GetShort(string colName);
-        int GetInt(string colName);
-        long GetLong(string colName);
-        decimal GetDecimal(string colName);
-        double GetDouble(string colName);
-        DateTime GetDateTime(string colName);
-        byte[] GetBytes(string colName);
-        void GetStream(String fieldName, Stream stream);
     }
 }
