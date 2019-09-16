@@ -16,9 +16,7 @@ var leettleDb = new LeettleDbBuilder()
 ```csharp
 using (var con = leettleDb.OpenConnection())
 {
-    string sql = "select * from Author where name like :name";
-    
-    using (var dataset = con.NewRawDataset(sql)) {
+    using (var dataset = con.NewRawDataset("select * from Author where name like :name")) {
         dataset.SetParam("name", "%phen%").Open();
         
         while (dataset.Next())
@@ -34,9 +32,8 @@ using (var con = leettleDb.OpenConnection())
 ```csharp
 using (var con = leettleDb.OpenConnection())
 {
-    string sql = "select * from Author where name like :name";
     // codes disposing resource doesn't need.
-    List<Author> authors = con.NewDataset(sql)
+    List<Author> authors = con.NewDataset("select * from Author where name like :name")
         .SetParam("name", "%phen%")
         .OpenAndFetchList<Author>();
 }
@@ -63,8 +60,8 @@ using (var con = leettleDb.OpenConnection())
 ## Installation
 * install LeettleDB package through nuget.
 * install ado.net data provider that what you want. (following data providers were tested)
-  * Oracle
-  * MySql
-  * PostgreSQL
-  * SQLite
-  * SQL Server
+  * Oracle (Oracle.ManagedDataAccess)
+  * MySql (Mysql.Data)
+  * PostgreSQL (Npgsql)
+  * SQLite (System.Data.SQLite.Core)
+  * SQL Server (System.Data.SqlClient)
