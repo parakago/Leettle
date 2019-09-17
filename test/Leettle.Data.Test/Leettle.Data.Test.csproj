@@ -97,9 +97,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DonkeyRawApiTest.cs" />
-    <Compile Include="DonkeyRawApiTestTarget.cs" />
+    <Compile Include="Client\MySQLTestClient.cs" />
+    <Compile Include="Client\OracleTestClient.cs" />
+    <Compile Include="Client\PostgresTestClient.cs" />
+    <Compile Include="Client\SQLiteTestClient.cs" />
+    <Compile Include="Client\SqlServerTestClient.cs" />
+    <Compile Include="LeettleDbApiTest.cs" />
+    <Compile Include="Client\AbstractTestClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="LeettleDbUtilTest.cs" />
+    <Compile Include="TestClientProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -111,6 +118,7 @@
       <Name>Leettle.db</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -29,7 +29,7 @@ namespace Leettle.Data.Impl
 
         public override void Dispose()
         {
-            Util.DisposeSilently(dbDataReader);
+            LeettleDbUtil.DisposeSilently(dbDataReader);
             base.Dispose();
         }
 

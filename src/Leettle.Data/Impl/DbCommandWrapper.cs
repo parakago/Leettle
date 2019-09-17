@@ -13,7 +13,7 @@ namespace Leettle.Data.Impl
 
         public virtual void Dispose()
         {
-            Util.DisposeSilently(dbCommand);
+            LeettleDbUtil.DisposeSilently(dbCommand);
         }
 
         public DbCommandWrapper AddParam(string paramName, object paramValue)

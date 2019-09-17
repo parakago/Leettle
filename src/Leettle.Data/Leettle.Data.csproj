@@ -56,7 +56,7 @@
     <Compile Include="IRawDataset.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlException.cs" />
-    <Compile Include="Util.cs" />
+    <Compile Include="LeettleDbUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

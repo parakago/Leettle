@@ -27,7 +27,7 @@ namespace Leettle.Data.Impl
             {
                 string fieldName = dbDataReader.GetName(i);
                 PropertyInfo propInfo = typeof(T).GetProperty(fieldName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-                if (propInfo == null)
+                if (propInfo != null)
                 {
                     fieldMappingInfo.Add(i, propInfo);
                 }
@@ -46,6 +46,16 @@ namespace Leettle.Data.Impl
                 if (columnValue != null)
                 {
                     PropertyInfo propertyInfo = pair.Value;
+
+                    if (propertyInfo.PropertyType == typeof(double))
+                        columnValue = Convert.ToDouble(columnValue);
+                    else if (propertyInfo.PropertyType == typeof(short))
+                        columnValue = Convert.ToInt16(columnValue);
+                    else if (propertyInfo.PropertyType == typeof(int))
+                        columnValue = Convert.ToInt32(columnValue);
+                    else if (propertyInfo.PropertyType == typeof(long))
+                        columnValue = Convert.ToInt64(columnValue);
+
                     propertyInfo.SetValue(target, columnValue);
                 }
             }
