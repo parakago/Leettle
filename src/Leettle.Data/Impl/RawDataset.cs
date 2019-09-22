@@ -7,7 +7,7 @@ namespace Leettle.Data.Impl
     class RawDataset : DbCommandWrapper, IRawDataset, IDisposable
     {
         private DbDataReader dbDataReader;
-        public RawDataset(DbCommand dbCommand) : base(dbCommand)
+        public RawDataset(DbCommand dbCommand, BindStrategy bindStrategy) : base(dbCommand, bindStrategy)
         {
             
         }
@@ -25,6 +25,11 @@ namespace Leettle.Data.Impl
         public IRawDataset SetParam(string paramName, object paramValue)
         {
             return (IRawDataset)AddParam(paramName, paramValue);
+        }
+
+        IRawDataset IRawDataset.BindParam(object paramObject)
+        {
+            return (IRawDataset)base.BindParam(paramObject);
         }
 
         public override void Dispose()

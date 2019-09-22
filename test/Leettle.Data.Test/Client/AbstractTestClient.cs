@@ -17,7 +17,7 @@ namespace Leettle.Data.Test.Client
         public string SqlCreateTable { get; internal set; }
         public string SqlDropTable { get; }
         public string SqlInsertInto { get; }
-        public char ParamIndicator { get; }
+        public char ParameterMarker { get; }
 
         delegate void TestTask(IConnection con);
 
@@ -26,11 +26,11 @@ namespace Leettle.Data.Test.Client
             
         }
 
-        public AbstractTestClient(string connectionString, Type dbConnectionType, char paramIndicator)
+        public AbstractTestClient(string connectionString, Type dbConnectionType, char parameterMarker)
         {
             ConnectionString = connectionString;
             DbConnectionType = dbConnectionType;
-            ParamIndicator = paramIndicator;
+            ParameterMarker = parameterMarker;
 
             SqlDropTable = "drop table " + TEST_TABLE_NAME;
             SqlInsertInto = "insert into " + TEST_TABLE_NAME + " (" + Environment.NewLine +
@@ -41,14 +41,19 @@ namespace Leettle.Data.Test.Client
 
         private string ToProperSql(string sql)
         {
-            return ParamIndicator.Equals(':') ? sql : sql.Replace(':', ParamIndicator);
+            return ParameterMarker.Equals(':') ? sql : sql.Replace(':', ParameterMarker);
         }
 
         private void RunTest(TestTask testTask)
         {
+            RunTest(new CleanBindStrategy(':'), testTask);
+        }
+        private void RunTest(BindStrategy bindStrategy, TestTask testTask)
+        {
             var leettleDb = new LeettleDbBuilder()
                 .WithConnectionString(ConnectionString)
                 .WithConnectionType(DbConnectionType)
+                .WithBindStrategy(bindStrategy)
                 .Build();
 
             using (var con = leettleDb.OpenConnection())
@@ -167,6 +172,61 @@ namespace Leettle.Data.Test.Client
                 Assert.AreEqual(testTableItem.v_date_time, fetchedList[0].v_date_time);
                 CollectionAssert.AreEqual(testTableItem.v_blob, fetchedList[0].v_blob);
                 Assert.AreEqual(testTableItem.v_long_text, fetchedList[0].v_long_text);
+            });
+        }
+
+        public void TestBindStrategy()
+        {
+            RunTest(new CamelObjectSnakeDbBindStrategy(ParameterMarker), (con) =>
+            {
+                var testTableItem = CreateNewRandomTestTableItem();
+
+                InsertToTestTable(con, testTableItem);
+
+                var camelTableItem = new TestTableCamelCaseItem();
+                camelTableItem.VString = testTableItem.v_string;
+                camelTableItem.VShort = testTableItem.v_short;
+                camelTableItem.VInt = testTableItem.v_int;
+                camelTableItem.VLong = testTableItem.v_long;
+                camelTableItem.VDouble = testTableItem.v_double;
+                camelTableItem.VDecimal = testTableItem.v_decimal;
+                camelTableItem.VDateTime = testTableItem.v_date_time;
+                camelTableItem.VBlob = testTableItem.v_blob;
+                camelTableItem.VLongText = testTableItem.v_long_text;
+
+                string selectSql1 = ToProperSql(string.Format("SELECT * FROM {0} WHERE v_string = :v_string", TEST_TABLE_NAME));
+
+                var fetchedItem = con.NewDataset(selectSql1)
+                    .BindParam(camelTableItem)
+                    .OpenAndFetch<TestTableCamelCaseItem>();
+
+                Assert.IsNotNull(fetchedItem);
+                Assert.AreEqual(camelTableItem.VString, fetchedItem.VString);
+                Assert.AreEqual(camelTableItem.VShort, fetchedItem.VShort);
+                Assert.AreEqual(camelTableItem.VInt, fetchedItem.VInt);
+                Assert.AreEqual(camelTableItem.VLong, fetchedItem.VLong);
+                Assert.AreEqual(camelTableItem.VDouble, fetchedItem.VDouble);
+                Assert.AreEqual(camelTableItem.VDecimal, fetchedItem.VDecimal);
+                Assert.AreEqual(camelTableItem.VDateTime, fetchedItem.VDateTime);
+                CollectionAssert.AreEqual(camelTableItem.VBlob, fetchedItem.VBlob);
+                Assert.AreEqual(camelTableItem.VLongText, fetchedItem.VLongText);
+
+
+                string selectSql2 = ToProperSql(string.Format("SELECT * FROM {0}", TEST_TABLE_NAME));
+                var fetchedList = con.NewDataset(selectSql2)
+                    .OpenAndFetchList<TestTableCamelCaseItem>();
+
+                Assert.IsNotNull(fetchedItem);
+                Assert.AreEqual(1, fetchedList.Count);
+                Assert.AreEqual(camelTableItem.VString, fetchedList[0].VString);
+                Assert.AreEqual(camelTableItem.VShort, fetchedList[0].VShort);
+                Assert.AreEqual(camelTableItem.VInt, fetchedList[0].VInt);
+                Assert.AreEqual(camelTableItem.VLong, fetchedList[0].VLong);
+                Assert.AreEqual(camelTableItem.VDouble, fetchedList[0].VDouble);
+                Assert.AreEqual(camelTableItem.VDecimal, fetchedList[0].VDecimal);
+                Assert.AreEqual(camelTableItem.VDateTime, fetchedList[0].VDateTime);
+                CollectionAssert.AreEqual(camelTableItem.VBlob, fetchedList[0].VBlob);
+                Assert.AreEqual(camelTableItem.VLongText, fetchedList[0].VLongText);
             });
         }
     }

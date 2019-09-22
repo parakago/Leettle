@@ -42,6 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assert.cs" />
+    <Compile Include="BindStrategy.cs" />
+    <Compile Include="CamelObjectSnakeDbBindStrategy.cs" />
+    <Compile Include="CleanBindStrategy.cs" />
     <Compile Include="LeettleDb.cs" />
     <Compile Include="LeettleDbBuilder.cs" />
     <Compile Include="ICommand.cs" />
@@ -55,7 +58,7 @@
     <Compile Include="Impl\LeettleDbImpl.cs" />
     <Compile Include="IRawDataset.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SqlException.cs" />
+    <Compile Include="LeettleDbQueryException.cs" />
     <Compile Include="LeettleDbUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -8,7 +8,9 @@ namespace Leettle.Data
     {
         private string connectionString;
         private Type dbConnectionType;
-        
+        private BindStrategy bindStrategy;
+
+
         public LeettleDbBuilder WithConnectionString(string connectionString)
         {
             Assert.NotNull(connectionString, "connectionString must not be null");
@@ -24,12 +26,22 @@ namespace Leettle.Data
             this.dbConnectionType = dbConnectionType;
             return this;
         }
+
+        public LeettleDbBuilder WithBindStrategy(BindStrategy bindStrategy)
+        {
+            Assert.NotNull(bindStrategy, "bindStrategy must not be null");
+            this.bindStrategy = bindStrategy;
+            return this;
+        }
         public LeettleDb Build()
         {
             Assert.NotNull(connectionString, "connectionString must not be null; use WithConnectionString");
             Assert.NotNull(dbConnectionType, "connectionString must not be null; use WithConnectionType");
-
-            return new LeettleDbImpl(connectionString, dbConnectionType);
+            if (bindStrategy == null)
+            {
+                bindStrategy = new CleanBindStrategy(':');
+            }
+            return new LeettleDbImpl(connectionString, dbConnectionType, bindStrategy);
         }
     }
 }

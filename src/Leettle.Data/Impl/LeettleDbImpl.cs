@@ -7,18 +7,22 @@ namespace Leettle.Data.Impl
     {
         private string connectionString;
         private Type dbConnectionType;
+        private BindStrategy bindStrategy;
 
-        public LeettleDbImpl(string connectionString, Type dbConnectionType)
+        public LeettleDbImpl(string connectionString, Type dbConnectionType, BindStrategy bindStrategy)
         {
             this.connectionString = connectionString;
             this.dbConnectionType = dbConnectionType;
+            this.bindStrategy = bindStrategy;
         }
 
         public IConnection OpenConnection()
         {
-            DbConnection instance = (DbConnection)Activator.CreateInstance(dbConnectionType);
-            instance.ConnectionString = connectionString;
-            return new Connection(instance);
+            var dbConnection = (DbConnection)Activator.CreateInstance(dbConnectionType);
+            dbConnection.ConnectionString = connectionString;
+            dbConnection.Open();
+
+            return new Connection(dbConnection, bindStrategy);
         }
     }
 }

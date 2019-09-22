@@ -8,5 +8,6 @@ namespace Leettle.Data
         T OpenAndFetch<T>() where T : class, new();
         List<T> OpenAndFetchList<T>() where T : class, new();
         IDataset SetParam(String paramName, object paramValue);
+        IDataset BindParam(object paramObject);
     }
 }

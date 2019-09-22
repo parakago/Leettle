@@ -49,5 +49,11 @@ namespace Leettle.Data.Impl
 
             return SetParam(paramName, blob);
         }
+
+        public ICommand BindParam(object paramObject)
+        {
+            dbCommand.BindParam(paramObject);
+            return this;
+        }
     }
 }

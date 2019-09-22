@@ -3,7 +3,7 @@
 namespace Leettle.Data.Test
 {
     [TestClass]
-    public class LeettleDbApiTest
+    public class LeettleDbRawApiTest
     {
         [TestMethod]
         public void PostgresRawApiTest()
@@ -33,36 +33,6 @@ namespace Leettle.Data.Test
         public void SqlServerRawApiTest()
         {
             TestClientProvider.SqlServer().TestRawApi();
-        }
-
-        [TestMethod]
-        public void PostgresEasyApiTest()
-        {
-            TestClientProvider.Postgres().TestEasyApi();
-        }
-
-        [TestMethod]
-        public void MySQLEasyApiTest()
-        {
-            TestClientProvider.MySQL().TestEasyApi();
-        }
-
-        [TestMethod]
-        public void SQLiteEasyApiTest()
-        {
-            TestClientProvider.SQLite().TestEasyApi();
-        }
-
-        [TestMethod]
-        public void OracleEasyApiTest()
-        {
-            TestClientProvider.Oracle().TestEasyApi();
-        }
-
-        [TestMethod]
-        public void SqlServerEasyApiTest()
-        {
-            TestClientProvider.SqlServer().TestEasyApi();
         }
     }
 }

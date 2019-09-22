@@ -7,11 +7,12 @@ namespace Leettle.Data.Impl
     {
         private DbConnection dbCon;
         private DbTransaction dbTrans;
+        private BindStrategy bindStrategy;
 
-        public Connection(DbConnection dbCon)
+        public Connection(DbConnection dbCon, BindStrategy bindStrategy)
         {
             this.dbCon = dbCon;
-            dbCon.Open();
+            this.bindStrategy = bindStrategy;
         }
 
         public void Dispose()
@@ -32,12 +33,12 @@ namespace Leettle.Data.Impl
 
         private DbCommandWrapper CreateDbCommandWrapper(string sql)
         {
-            return new DbCommandWrapper(CreateDbCommand(sql));
+            return new DbCommandWrapper(CreateDbCommand(sql), bindStrategy);
         }
 
         public IRawDataset NewRawDataset(string sql)
         {
-            return new RawDataset(CreateDbCommand(sql));
+            return new RawDataset(CreateDbCommand(sql), bindStrategy);
         }
 
         public IDataset NewDataset(string sql)

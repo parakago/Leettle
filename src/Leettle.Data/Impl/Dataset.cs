@@ -19,14 +19,21 @@ namespace Leettle.Data.Impl
             return this;
         }
 
+        public IDataset BindParam(object paramObject)
+        {
+            dbCommand.BindParam(paramObject);
+            return this;
+        }
+
         private Dictionary<int, PropertyInfo> ExtractFieldMappingInfo<T>(DbDataReader dbDataReader)
         {
             var fieldMappingInfo = new Dictionary<int, PropertyInfo>(dbDataReader.FieldCount);
 
             for (int i = 0; i < dbDataReader.FieldCount; ++i)
             {
-                string fieldName = dbDataReader.GetName(i);
-                PropertyInfo propInfo = typeof(T).GetProperty(fieldName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+                string columnName = dbDataReader.GetName(i);
+                string propertyName = dbCommand.BindStrategy.ToPropertyName(columnName);
+                var propInfo = LeettleDbUtil.FindProperty(typeof(T), propertyName);
                 if (propInfo != null)
                 {
                     fieldMappingInfo.Add(i, propInfo);

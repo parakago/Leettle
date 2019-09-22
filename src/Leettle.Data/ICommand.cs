@@ -7,6 +7,7 @@ namespace Leettle.Data
     {
         ICommand SetParam(string paramName, object paramValue);
         ICommand SetParam(String paramName, Stream paramValue);
+        ICommand BindParam(object paramObject);
         int Execute();
     }
 }
