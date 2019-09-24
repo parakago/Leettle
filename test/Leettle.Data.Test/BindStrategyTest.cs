@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Leettle.Data.Test
 {
     [TestClass]
-    public class LeettleDbBindStrategyTest
+    public class BindStrategyTest
     {
         [TestMethod]
         public void TestCamelObjectSnakeDbBindStrategy()

@@ -6,7 +6,8 @@ namespace Leettle.Data
     public interface IDataset
     {
         void Open(Action<IDatasetDataReader> consumer);
-        List<T> OpenAndFetchList<T>() where T : class, new();
+        List<T> OpenAndFetchList<T>();
+        T OpenAndFetchScalar<T>();
         IDataset SetParam(String paramName, object paramValue);
         IDataset BindParam(object paramObject);
     }

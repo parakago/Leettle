@@ -8,24 +8,24 @@ namespace Leettle.Data.Impl
 {
     class DatasetDataReader : IDatasetDataReader
     {
-        private DbDataReader dbDataReader;
+        public DbDataReader DbDataReader { get; }
         private BindStrategy bindStrategy;
         private Dictionary<int, PropertyInfo> fieldMappingInfo;
 
         public DatasetDataReader(DbDataReader dbDataReader, BindStrategy bindStrategy)
         {
-            this.dbDataReader = dbDataReader;
+            this.DbDataReader = dbDataReader;
             this.bindStrategy = bindStrategy;
         }
 
         public bool Next()
         {
-            return dbDataReader.Read();
+            return DbDataReader.Read();
         }
 
         public object GetObject(string colName)
         {
-            return dbDataReader[colName];
+            return DbDataReader[colName];
         }
 
         public DateTime GetDateTime(string colName)
@@ -60,6 +60,8 @@ namespace Leettle.Data.Impl
 
         public void GetStream(string colName, Stream stream)
         {
+            Assert.NotNull(stream, "stream must not be null");
+
             byte[] bytes = (byte[])GetObject(colName);
             stream.Write(bytes, 0, bytes.Length);
         }
@@ -74,7 +76,7 @@ namespace Leettle.Data.Impl
             return Convert.ToString(GetObject(colName));
         }
 
-        public T Fetch<T>() where T : class, new()
+        public T Fetch<T>()
         {
             if (fieldMappingInfo == null)
             {
@@ -85,20 +87,11 @@ namespace Leettle.Data.Impl
             foreach (var pair in fieldMappingInfo)
             {
                 int columnIndex = pair.Key;
-                object columnValue = dbDataReader.IsDBNull(columnIndex) ? null : dbDataReader.GetValue(columnIndex);
+                object columnValue = DbDataReader.IsDBNull(columnIndex) ? null : DbDataReader.GetValue(columnIndex);
                 if (columnValue != null)
                 {
                     PropertyInfo propertyInfo = pair.Value;
-
-                    if (propertyInfo.PropertyType == typeof(double))
-                        columnValue = Convert.ToDouble(columnValue);
-                    else if (propertyInfo.PropertyType == typeof(short))
-                        columnValue = Convert.ToInt16(columnValue);
-                    else if (propertyInfo.PropertyType == typeof(int))
-                        columnValue = Convert.ToInt32(columnValue);
-                    else if (propertyInfo.PropertyType == typeof(long))
-                        columnValue = Convert.ToInt64(columnValue);
-
+                    columnValue = Convert.ChangeType(columnValue, propertyInfo.PropertyType);
                     propertyInfo.SetValue(target, columnValue);
                 }
             }
@@ -107,11 +100,11 @@ namespace Leettle.Data.Impl
 
         public Dictionary<int, PropertyInfo> ExtractFieldMappingInfo<T>()
         {
-            var fieldMappingInfo = new Dictionary<int, PropertyInfo>(dbDataReader.FieldCount);
+            var fieldMappingInfo = new Dictionary<int, PropertyInfo>(DbDataReader.FieldCount);
 
-            for (int i = 0; i < dbDataReader.FieldCount; ++i)
+            for (int i = 0; i < DbDataReader.FieldCount; ++i)
             {
-                string columnName = dbDataReader.GetName(i);
+                string columnName = DbDataReader.GetName(i);
                 string propertyName = bindStrategy.ToPropertyName(columnName);
                 var propInfo = LeettleDbUtil.FindProperty(typeof(T), propertyName);
                 if (propInfo != null)

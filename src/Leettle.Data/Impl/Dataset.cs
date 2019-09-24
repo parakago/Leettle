@@ -32,7 +32,7 @@ namespace Leettle.Data.Impl
             }
         }
 
-        public List<T> OpenAndFetchList<T>() where T : class, new()
+        public List<T> OpenAndFetchList<T>()
         {
             List<T> list = new List<T>();
             Open(dr =>
@@ -43,6 +43,20 @@ namespace Leettle.Data.Impl
                 }
             });
             return list;
+        }
+
+        public T OpenAndFetchScalar<T>()
+        {
+            object result = null;
+            Open(dr =>
+            {
+                if (dr.Next())
+                {
+                    result = dr.DbDataReader[0];
+                }
+            });
+
+            return (T)Convert.ChangeType(result, typeof(T));
         }
     }
 }

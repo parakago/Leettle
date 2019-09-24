@@ -104,7 +104,7 @@ namespace Leettle.Data.Test.Client
                 .Execute();
         }
 
-        public void TestRawApi()
+        public void TestOpen()
         {
             RunTest((con) =>
             {
@@ -131,7 +131,7 @@ namespace Leettle.Data.Test.Client
             });
         }
 
-        public void TestEasyApi()
+        public void TestOpenAndFetchList()
         {
             RunTest((con) =>
             {
@@ -154,6 +154,28 @@ namespace Leettle.Data.Test.Client
                 Assert.AreEqual(testTableItem.v_date_time, fetchedList[0].v_date_time);
                 CollectionAssert.AreEqual(testTableItem.v_blob, fetchedList[0].v_blob);
                 Assert.AreEqual(testTableItem.v_long_text, fetchedList[0].v_long_text);
+            });
+        }
+
+        public void TestOpenAndFetchScalar()
+        {
+            RunTest((con) =>
+            {
+                var testTableItem = CreateNewRandomTestTableItem();
+
+                InsertToTestTable(con, testTableItem);
+
+                Assert.AreEqual(testTableItem.v_string, con.NewDataset(string.Format("select {0} from {1}", "v_string", TEST_TABLE_NAME)).OpenAndFetchScalar<string>());
+                Assert.AreEqual(testTableItem.v_short, con.NewDataset(string.Format("select {0} from {1}", "v_short", TEST_TABLE_NAME)).OpenAndFetchScalar<short>());
+                Assert.AreEqual(testTableItem.v_int, con.NewDataset(string.Format("select {0} from {1}", "v_int", TEST_TABLE_NAME)).OpenAndFetchScalar<int>());
+                Assert.AreEqual(testTableItem.v_long, con.NewDataset(string.Format("select {0} from {1}", "v_long", TEST_TABLE_NAME)).OpenAndFetchScalar<long>());
+                Assert.AreEqual(testTableItem.v_double, con.NewDataset(string.Format("select {0} from {1}", "v_double", TEST_TABLE_NAME)).OpenAndFetchScalar<double>());
+                Assert.AreEqual(testTableItem.v_decimal, con.NewDataset(string.Format("select {0} from {1}", "v_decimal", TEST_TABLE_NAME)).OpenAndFetchScalar<decimal>());
+                Assert.AreEqual(testTableItem.v_date_time, con.NewDataset(string.Format("select {0} from {1}", "v_date_time", TEST_TABLE_NAME)).OpenAndFetchScalar<DateTime>());
+                CollectionAssert.AreEqual(testTableItem.v_blob, con.NewDataset(string.Format("select {0} from {1}", "v_blob", TEST_TABLE_NAME)).OpenAndFetchScalar<byte[]>());
+                Assert.AreEqual(testTableItem.v_long_text, con.NewDataset(string.Format("select {0} from {1}", "v_long_text", TEST_TABLE_NAME)).OpenAndFetchScalar<string>());
+
+                InsertToTestTable(con, testTableItem);
             });
         }
 

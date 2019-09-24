@@ -25,7 +25,7 @@ namespace Leettle.Data.Impl
 
             var dbParam = dbCommand.CreateParameter();
             dbParam.ParameterName = paramName;
-            dbParam.Value = paramValue;
+            dbParam.Value = paramValue == null ? DBNull.Value : paramValue;
             dbCommand.Parameters.Add(dbParam);
             return this;
         }

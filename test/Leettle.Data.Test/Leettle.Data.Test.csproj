@@ -102,10 +102,11 @@
     <Compile Include="Client\PostgresTestClient.cs" />
     <Compile Include="Client\SQLiteTestClient.cs" />
     <Compile Include="Client\SqlServerTestClient.cs" />
-    <Compile Include="LeettleDbEasyApiTest.cs" />
-    <Compile Include="LeettleDbRawApiTest.cs" />
+    <Compile Include="OpenAndFetchScalarTest.cs" />
+    <Compile Include="OpenAndFetchListTest.cs" />
+    <Compile Include="OpenTest.cs" />
     <Compile Include="Client\AbstractTestClient.cs" />
-    <Compile Include="LeettleDbBindStrategyTest.cs" />
+    <Compile Include="BindStrategyTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="LeettleDbUtilTest.cs" />
     <Compile Include="TestClientProvider.cs" />

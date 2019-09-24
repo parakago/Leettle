@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Data.Common;
 using System.IO;
 
 namespace Leettle.Data
 {
     public interface IDatasetDataReader
     {
+        DbDataReader DbDataReader { get; }
         bool Next();
         object GetObject(string colName);
         string GetString(string colName);
@@ -16,6 +18,6 @@ namespace Leettle.Data
         DateTime GetDateTime(string colName);
         byte[] GetBytes(string colName);
         void GetStream(String fieldName, Stream stream);
-        T Fetch<T>() where T : class, new();
+        T Fetch<T>();
     }
 }
