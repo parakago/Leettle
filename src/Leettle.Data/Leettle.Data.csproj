@@ -45,6 +45,8 @@
     <Compile Include="BindStrategy.cs" />
     <Compile Include="CamelObjectSnakeDbBindStrategy.cs" />
     <Compile Include="CleanBindStrategy.cs" />
+    <Compile Include="Impl\DatasetDataReader.cs" />
+    <Compile Include="IDatasetDataReader.cs" />
     <Compile Include="LeettleDb.cs" />
     <Compile Include="LeettleDbBuilder.cs" />
     <Compile Include="ICommand.cs" />
@@ -53,10 +55,8 @@
     <Compile Include="Impl\DbCommandWrapper.cs" />
     <Compile Include="Impl\Command.cs" />
     <Compile Include="Impl\Connection.cs" />
-    <Compile Include="Impl\RawDataset.cs" />
     <Compile Include="Impl\Dataset.cs" />
     <Compile Include="Impl\LeettleDbImpl.cs" />
-    <Compile Include="IRawDataset.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="LeettleDbQueryException.cs" />
     <Compile Include="LeettleDbUtil.cs" />

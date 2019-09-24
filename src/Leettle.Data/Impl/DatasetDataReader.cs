@@ -1,55 +1,29 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Leettle.Data.Impl
 {
-    class RawDataset : DbCommandWrapper, IRawDataset, IDisposable
+    class DatasetDataReader : IDatasetDataReader
     {
         private DbDataReader dbDataReader;
-        public RawDataset(DbCommand dbCommand, BindStrategy bindStrategy) : base(dbCommand, bindStrategy)
+        public DatasetDataReader(DbDataReader dbDataReader)
         {
-            
+            this.dbDataReader = dbDataReader;
         }
 
         public bool Next()
         {
-            return CheckDataReader().Read();
-        }
-
-        public void Open()
-        {
-            dbDataReader = ExecuteReader();
-        }
-
-        public IRawDataset SetParam(string paramName, object paramValue)
-        {
-            return (IRawDataset)AddParam(paramName, paramValue);
-        }
-
-        IRawDataset IRawDataset.BindParam(object paramObject)
-        {
-            return (IRawDataset)base.BindParam(paramObject);
-        }
-
-        public override void Dispose()
-        {
-            LeettleDbUtil.DisposeSilently(dbDataReader);
-            base.Dispose();
-        }
-
-        private DbDataReader CheckDataReader()
-        {
-            if (dbDataReader == null)
-            {
-                throw new Exception("open dataset first");
-            }
-            return dbDataReader;
+            return dbDataReader.Read();
         }
 
         public object GetObject(string colName)
         {
-            return CheckDataReader()[colName];
+            return dbDataReader[colName];
         }
 
         public DateTime GetDateTime(string colName)

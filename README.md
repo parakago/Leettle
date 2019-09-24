@@ -1,7 +1,7 @@
 # LeettleDB
 
 ## Introduction
-LeettleDB is a C# [ADO.NET](https://docs.microsoft.com/dotnet/framework/data/adonet) wrapper library to provide same(?) api for different types of database providers and useful method that maps fetched result to a POCO or dynamic object.
+LeettleDB is a C# [ADO.NET](https://docs.microsoft.com/dotnet/framework/data/adonet) wrapper library to provide same(?) api for different types of database providers and useful method that maps fetched result to a POCO.
 
 ## Example
 * Creating leettleDB object
@@ -9,23 +9,8 @@ LeettleDB is a C# [ADO.NET](https://docs.microsoft.com/dotnet/framework/data/ado
 var leettleDb = new LeettleDbBuilder()
     .WithConnectionType(typeof(System.Data.SQLite.SQLiteConnection))
     .WithConnectionString("Data Source=:memory:;Version=3;New=True;")
+	.WithBindStrategy(new CamelObjectSnakeDbBindStrategy())
     .Build();
-```
-
-* Basic raw API fetching data
-```csharp
-using (var con = leettleDb.OpenConnection())
-{
-    using (var dataset = con.NewRawDataset("select * from Author where name like :name")) {
-        dataset.SetParam("name", "%phen%").Open();
-        
-        while (dataset.Next())
-        {
-            var authorId = dataset.GetInt("id");
-            var authorName = dataset.GetString("name");
-        }
-    }
-}
 ```
 
 * Fetching and mapping to POCO List
@@ -36,6 +21,23 @@ using (var con = leettleDb.OpenConnection())
     List<Author> authors = con.NewDataset("select * from Author where name like :name")
         .SetParam("name", "%phen%")
         .OpenAndFetchList<Author>();
+}
+```
+
+* Basic raw API fetching data
+```csharp
+using (var con = leettleDb.OpenConnection())
+{
+    con.NewDataset("select * from Author where name like :name")
+        .SetParam("name", "%phen%")
+		.Open(dr =>
+    {
+		while (dr.Next())
+        {
+            var authorId = dr.GetInt("id");
+            var authorName = dr.GetString("name");
+        }
+    });
 }
 ```
 

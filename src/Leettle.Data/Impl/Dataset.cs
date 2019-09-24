@@ -25,6 +25,14 @@ namespace Leettle.Data.Impl
             return this;
         }
 
+        public void Open(Action<IDatasetDataReader> consumer)
+        {
+            using (DbDataReader dbDataReader = dbCommand.ExecuteReader())
+            {
+                consumer.Invoke(new DatasetDataReader(dbDataReader));
+            }
+        }
+
         private Dictionary<int, PropertyInfo> ExtractFieldMappingInfo<T>(DbDataReader dbDataReader)
         {
             var fieldMappingInfo = new Dictionary<int, PropertyInfo>(dbDataReader.FieldCount);
@@ -69,22 +77,6 @@ namespace Leettle.Data.Impl
             return target;
         }
 
-        public T OpenAndFetch<T>() where T : class, new()
-        {
-            using (DbDataReader dbDataReader = dbCommand.ExecuteReader())
-            {
-                if (dbDataReader.Read())
-                {
-                    var fieldMappingInfo = ExtractFieldMappingInfo<T>(dbDataReader);
-                    return Fetch<T>(dbDataReader, fieldMappingInfo);
-                }
-                else
-                {
-                    return null;
-                }
-            }
-        }
-
         public List<T> OpenAndFetchList<T>() where T : class, new()
         {
             using (DbDataReader dbDataReader = dbCommand.ExecuteReader())
@@ -101,7 +93,7 @@ namespace Leettle.Data.Impl
                     list.Add(Fetch<T>(dbDataReader, fieldMappingInfo));
                 }
                 return list;
-            }    
+            }
         }
     }
 }

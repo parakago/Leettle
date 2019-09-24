@@ -36,11 +36,6 @@ namespace Leettle.Data.Impl
             return new DbCommandWrapper(CreateDbCommand(sql), bindStrategy);
         }
 
-        public IRawDataset NewRawDataset(string sql)
-        {
-            return new RawDataset(CreateDbCommand(sql), bindStrategy);
-        }
-
         public IDataset NewDataset(string sql)
         {
             return new Dataset(CreateDbCommandWrapper(sql));
@@ -51,13 +46,18 @@ namespace Leettle.Data.Impl
             return new Command(CreateDbCommandWrapper(sql));
         }
 
-        public void RunInTransaction(TransactionJob transactionJob)
+        public void RunInTransaction(Action<IConnection> job)
         {
+            if (dbTrans != null)
+            {
+                throw new Exception("transaction already started!!!");
+            }
+
             try
             {
                 dbTrans = dbCon.BeginTransaction();
 
-                transactionJob(this);
+                job.Invoke(this);
 
                 dbTrans.Commit();
             }

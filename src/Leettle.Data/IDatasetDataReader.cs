@@ -3,12 +3,9 @@ using System.IO;
 
 namespace Leettle.Data
 {
-    public interface IRawDataset : IDisposable
+    public interface IDatasetDataReader
     {
-        void Open();
         bool Next();
-        IRawDataset SetParam(String paramName, object paramValue);
-        IRawDataset BindParam(object paramObject);
         object GetObject(string colName);
         string GetString(string colName);
         short GetShort(string colName);
