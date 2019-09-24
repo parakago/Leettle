@@ -49,7 +49,27 @@ namespace Leettle.Data
 
         public static PropertyInfo FindProperty(Type t, string propertyName)
         {
-            return t.GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+            foreach (var propertyInfo in t.GetTypeInfo().DeclaredProperties)
+            {
+                if (propertyInfo.Name.Equals(propertyName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return propertyInfo;
+                }
+            }
+            return null;
+        }
+
+        public static bool IsSubclassOf(Type p, Type c)
+        {
+            if (p == c)
+                return false;
+            while (p != null)
+            {
+                if (p == c)
+                    return true;
+                p = p.GetTypeInfo().BaseType;
+            }
+            return false;
         }
     }
 }

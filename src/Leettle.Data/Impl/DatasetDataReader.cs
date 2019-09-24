@@ -92,7 +92,7 @@ namespace Leettle.Data.Impl
                 {
                     PropertyInfo propertyInfo = pair.Value;
                     columnValue = Convert.ChangeType(columnValue, propertyInfo.PropertyType);
-                    propertyInfo.SetValue(target, columnValue);
+                    propertyInfo.SetValue(target, columnValue, null);
                 }
             }
             return target;

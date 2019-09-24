@@ -18,7 +18,7 @@ namespace Leettle.Data
 
         public static void isAssignable(Type superType, Type subType, string message)
         {
-            if (!subType.IsSubclassOf(superType))
+            if (!LeettleDbUtil.IsSubclassOf(subType, superType))
             {
                 throw new ArgumentException(message);
             }

@@ -44,7 +44,7 @@ namespace Leettle.Data.Impl
                 var property = LeettleDbUtil.FindProperty(paramType, propertyName);
                 if (property != null)
                 {
-                    object paramValue = property.GetValue(paramObject);
+                    object paramValue = property.GetValue(paramObject, null);
                     AddParam(parameterName, paramValue);
                 }
             }

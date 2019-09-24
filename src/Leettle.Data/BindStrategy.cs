@@ -2,7 +2,7 @@
 {
     public abstract class BindStrategy
     {
-        public char ParameterMarker { get; internal set; }
+        public char ParameterMarker { get; }
         public BindStrategy(char parameterMarker)
         {
             ParameterMarker = parameterMarker;
