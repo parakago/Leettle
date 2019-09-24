@@ -9,7 +9,7 @@ LeettleDB is a C# [ADO.NET](https://docs.microsoft.com/dotnet/framework/data/ado
 var leettleDb = new LeettleDbBuilder()
     .WithConnectionType(typeof(System.Data.SQLite.SQLiteConnection))
     .WithConnectionString("Data Source=:memory:;Version=3;New=True;")
-	.WithBindStrategy(new CamelObjectSnakeDbBindStrategy())
+    .WithBindStrategy(new CamelObjectSnakeDbBindStrategy(':'))
     .Build();
 ```
 
