@@ -16,5 +16,6 @@ namespace Leettle.Data
         DateTime GetDateTime(string colName);
         byte[] GetBytes(string colName);
         void GetStream(String fieldName, Stream stream);
+        T Fetch<T>() where T : class, new();
     }
 }

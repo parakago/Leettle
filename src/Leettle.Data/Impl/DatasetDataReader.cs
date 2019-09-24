@@ -2,18 +2,20 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 
 namespace Leettle.Data.Impl
 {
     class DatasetDataReader : IDatasetDataReader
     {
         private DbDataReader dbDataReader;
-        public DatasetDataReader(DbDataReader dbDataReader)
+        private BindStrategy bindStrategy;
+        private Dictionary<int, PropertyInfo> fieldMappingInfo;
+
+        public DatasetDataReader(DbDataReader dbDataReader, BindStrategy bindStrategy)
         {
             this.dbDataReader = dbDataReader;
+            this.bindStrategy = bindStrategy;
         }
 
         public bool Next()
@@ -70,6 +72,55 @@ namespace Leettle.Data.Impl
         public string GetString(string colName)
         {
             return Convert.ToString(GetObject(colName));
+        }
+
+        public T Fetch<T>() where T : class, new()
+        {
+            if (fieldMappingInfo == null)
+            {
+                fieldMappingInfo = ExtractFieldMappingInfo<T>();
+            }
+
+            T target = (T)Activator.CreateInstance(typeof(T));
+            foreach (var pair in fieldMappingInfo)
+            {
+                int columnIndex = pair.Key;
+                object columnValue = dbDataReader.IsDBNull(columnIndex) ? null : dbDataReader.GetValue(columnIndex);
+                if (columnValue != null)
+                {
+                    PropertyInfo propertyInfo = pair.Value;
+
+                    if (propertyInfo.PropertyType == typeof(double))
+                        columnValue = Convert.ToDouble(columnValue);
+                    else if (propertyInfo.PropertyType == typeof(short))
+                        columnValue = Convert.ToInt16(columnValue);
+                    else if (propertyInfo.PropertyType == typeof(int))
+                        columnValue = Convert.ToInt32(columnValue);
+                    else if (propertyInfo.PropertyType == typeof(long))
+                        columnValue = Convert.ToInt64(columnValue);
+
+                    propertyInfo.SetValue(target, columnValue);
+                }
+            }
+            return target;
+        }
+
+        public Dictionary<int, PropertyInfo> ExtractFieldMappingInfo<T>()
+        {
+            var fieldMappingInfo = new Dictionary<int, PropertyInfo>(dbDataReader.FieldCount);
+
+            for (int i = 0; i < dbDataReader.FieldCount; ++i)
+            {
+                string columnName = dbDataReader.GetName(i);
+                string propertyName = bindStrategy.ToPropertyName(columnName);
+                var propInfo = LeettleDbUtil.FindProperty(typeof(T), propertyName);
+                if (propInfo != null)
+                {
+                    fieldMappingInfo.Add(i, propInfo);
+                }
+            }
+
+            return fieldMappingInfo;
         }
     }
 }
