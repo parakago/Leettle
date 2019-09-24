@@ -30,9 +30,9 @@ using (var con = leettleDb.OpenConnection())
 {
     con.NewDataset("select * from Author where name like :name")
         .SetParam("name", "%phen%")
-		.Open(dr =>
+        .Open(dr =>
     {
-		while (dr.Next())
+        while (dr.Next())
         {
             var authorId = dr.GetInt("id");
             var authorName = dr.GetString("name");
