@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<sqls>
+  <sql id="select.test.all">
+    select * from dk_test
+  </sql>
+  <sql id="select.test.all.orderby1">
+    select * from dk_test order by v_string
+  </sql>
+</sqls>

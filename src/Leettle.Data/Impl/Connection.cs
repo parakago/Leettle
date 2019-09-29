@@ -8,11 +8,13 @@ namespace Leettle.Data.Impl
         private DbConnection dbCon;
         private DbTransaction dbTrans;
         private BindStrategy bindStrategy;
+        private IPreparedSqlProvider sqlProvider;
 
-        public Connection(DbConnection dbCon, BindStrategy bindStrategy)
+        public Connection(DbConnection dbCon, BindStrategy bindStrategy, IPreparedSqlProvider sqlProvider)
         {
             this.dbCon = dbCon;
             this.bindStrategy = bindStrategy;
+            this.sqlProvider = sqlProvider;
         }
 
         public void Dispose()
@@ -70,6 +72,18 @@ namespace Leettle.Data.Impl
             {
                 dbTrans = null;
             }
+        }
+
+        public IDataset PreparedDataset(string sqlId)
+        {
+            string sql = sqlProvider.GetSql(sqlId);
+            return NewDataset(sql);
+        }
+
+        public ICommand PreparedCommand(string sqlId)
+        {
+            string sql = sqlProvider.GetSql(sqlId);
+            return NewCommand(sql);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Leettle.Data
         private string connectionString;
         private Type dbConnectionType;
         private BindStrategy bindStrategy;
-
+        private IPreparedSqlProvider sqlProvider;
 
         public LeettleDbBuilder WithConnectionString(string connectionString)
         {
@@ -33,6 +33,14 @@ namespace Leettle.Data
             this.bindStrategy = bindStrategy;
             return this;
         }
+
+        public LeettleDbBuilder WithPrepqredSqlProvider(IPreparedSqlProvider sqlProvider)
+        {
+            Assert.NotNull(sqlProvider, "queryProvider must not be null");
+            this.sqlProvider = sqlProvider;
+            return this;
+        }
+
         public LeettleDb Build()
         {
             Assert.NotNull(connectionString, "connectionString must not be null; use WithConnectionString");
@@ -41,7 +49,11 @@ namespace Leettle.Data
             {
                 bindStrategy = new CleanBindStrategy(':');
             }
-            return new LeettleDbImpl(connectionString, dbConnectionType, bindStrategy);
+            if (sqlProvider == null)
+            {
+                sqlProvider = new EmptySqlProvider();
+            }
+            return new LeettleDbImpl(connectionString, dbConnectionType, bindStrategy, sqlProvider);
         }
     }
 }

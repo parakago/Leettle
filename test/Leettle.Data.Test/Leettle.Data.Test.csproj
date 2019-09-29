@@ -102,6 +102,7 @@
     <Compile Include="Client\PostgresTestClient.cs" />
     <Compile Include="Client\SQLiteTestClient.cs" />
     <Compile Include="Client\SqlServerTestClient.cs" />
+    <Compile Include="FileSystemSqlProviderTest.cs" />
     <Compile Include="OpenAndFetchScalarTest.cs" />
     <Compile Include="OpenAndFetchListTest.cs" />
     <Compile Include="OpenTest.cs" />
@@ -120,6 +121,11 @@
       <Project>{6931b544-c3aa-4602-a821-c98102b6d81f}</Project>
       <Name>Leettle.Data</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="preparedSqls\sample.xml" />
+    <Content Include="preparedSqls\test.xml" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
