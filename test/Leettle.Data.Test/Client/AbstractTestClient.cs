@@ -191,20 +191,19 @@ namespace Leettle.Data.Test.Client
                 camelTableItem.VString = testTableItem.v_string;
 
                 string sql = ToProperSql(string.Format("SELECT * FROM {0} WHERE v_string = :v_string", TEST_TABLE_NAME));
-                var fetchedList = con.NewDataset(sql)
+                var fetched = con.NewDataset(sql)
                     .BindParam(camelTableItem)
-                    .OpenAndFetchList<TestTableCamelCaseItem>();
+                    .OpenAndFetch<TestTableCamelCaseItem>();
 
-                Assert.AreEqual(1, fetchedList.Count);
-                Assert.AreEqual(testTableItem.v_string, fetchedList[0].VString);
-                Assert.AreEqual(testTableItem.v_short, fetchedList[0].VShort);
-                Assert.AreEqual(testTableItem.v_int, fetchedList[0].VInt);
-                Assert.AreEqual(testTableItem.v_long, fetchedList[0].VLong);
-                Assert.AreEqual(testTableItem.v_double, fetchedList[0].VDouble);
-                Assert.AreEqual(testTableItem.v_decimal, fetchedList[0].VDecimal);
-                Assert.AreEqual(testTableItem.v_date_time, fetchedList[0].VDateTime);
-                CollectionAssert.AreEqual(testTableItem.v_blob, fetchedList[0].VBlob);
-                Assert.AreEqual(testTableItem.v_long_text, fetchedList[0].VLongText);
+                Assert.AreEqual(testTableItem.v_string, fetched.VString);
+                Assert.AreEqual(testTableItem.v_short, fetched.VShort);
+                Assert.AreEqual(testTableItem.v_int, fetched.VInt);
+                Assert.AreEqual(testTableItem.v_long, fetched.VLong);
+                Assert.AreEqual(testTableItem.v_double, fetched.VDouble);
+                Assert.AreEqual(testTableItem.v_decimal, fetched.VDecimal);
+                Assert.AreEqual(testTableItem.v_date_time, fetched.VDateTime);
+                CollectionAssert.AreEqual(testTableItem.v_blob, fetched.VBlob);
+                Assert.AreEqual(testTableItem.v_long_text, fetched.VLongText);
             });
         }
     }

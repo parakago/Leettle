@@ -32,6 +32,20 @@ namespace Leettle.Data.Impl
             }
         }
 
+        public T OpenAndFetch<T>()
+        {
+            object result = null;
+            Open(dr =>
+            {
+                if (dr.Next())
+                {
+                    result = dr.Fetch<T>();
+                }
+            });
+
+            return (T)result;
+        }
+
         public List<T> OpenAndFetchList<T>()
         {
             List<T> list = new List<T>();
@@ -57,6 +71,19 @@ namespace Leettle.Data.Impl
             });
 
             return (T)Convert.ChangeType(result, typeof(T));
+        }
+
+        public List<T> OpenAndFetchScalarList<T>()
+        {
+            List<T> list = new List<T>();
+            Open(dr =>
+            {
+                while (dr.Next())
+                {
+                    list.Add((T)Convert.ChangeType(dr.DbDataReader[0], typeof(T)));
+                }
+            });
+            return list;
         }
     }
 }
