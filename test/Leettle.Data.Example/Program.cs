@@ -5,7 +5,9 @@ namespace Leettle.Data.Example
 {
     class Program
     {
+#pragma warning disable IDE0060
         static void Main(string[] args)
+#pragma warning restore IDE0060
         {
             // 00. initializing leettledb instance thread-safe
             var leettleDb = new LeettleDbBuilder()
@@ -14,7 +16,9 @@ namespace Leettle.Data.Example
                 .WithBindStrategy(new CamelObjectSnakeDbBindStrategy(':'))
                 .Build();
 
+#pragma warning disable IDE0063
             using (var con = leettleDb.OpenConnection())
+#pragma warning restore IDE0063
             {
                 // 01.
                 Console.WriteLine("01. creating account table");

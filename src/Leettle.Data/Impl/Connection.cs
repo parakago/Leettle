@@ -5,10 +5,10 @@ namespace Leettle.Data.Impl
 {
     class Connection : IConnection, IDisposable
     {
-        private DbConnection dbCon;
+        private readonly DbConnection dbCon;
+        private readonly BindStrategy bindStrategy;
+        private readonly IPreparedSqlProvider sqlProvider;
         private DbTransaction dbTrans;
-        private BindStrategy bindStrategy;
-        private IPreparedSqlProvider sqlProvider;
 
         public Connection(DbConnection dbCon, BindStrategy bindStrategy, IPreparedSqlProvider sqlProvider)
         {
@@ -22,7 +22,7 @@ namespace Leettle.Data.Impl
             dbCon.Dispose();
         }
 
-        private DbCommand CreateDbCommand(string sql)
+        public DbCommand CreateDbCommand(string sql)
         {
             var dbCmd = dbCon.CreateCommand();
             dbCmd.CommandText = sql;
@@ -35,7 +35,7 @@ namespace Leettle.Data.Impl
 
         private DbCommandWrapper CreateDbCommandWrapper(string sql)
         {
-            return new DbCommandWrapper(CreateDbCommand(sql), bindStrategy);
+            return new DbCommandWrapper(this, bindStrategy, sql);
         }
 
         public IDataset NewDataset(string sql)
@@ -70,6 +70,7 @@ namespace Leettle.Data.Impl
             }
             finally
             {
+                dbTrans.Dispose();
                 dbTrans = null;
             }
         }

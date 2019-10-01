@@ -4,7 +4,7 @@ namespace Leettle.Data.Impl
 {
     class Command : ICommand
     {
-        DbCommandWrapper dbCommand;
+        private readonly DbCommandWrapper dbCommand;
         public Command(DbCommandWrapper dbCommand)
         {
             this.dbCommand = dbCommand;

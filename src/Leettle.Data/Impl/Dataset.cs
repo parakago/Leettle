@@ -6,7 +6,7 @@ namespace Leettle.Data.Impl
 {
     class Dataset : IDataset
     {
-        private DbCommandWrapper dbCommand;
+        private readonly DbCommandWrapper dbCommand;
         public Dataset(DbCommandWrapper dbCommand)
         {
             this.dbCommand = dbCommand;
@@ -26,10 +26,10 @@ namespace Leettle.Data.Impl
 
         public void Open(Action<IDatasetDataReader> consumer)
         {
-            using (DbDataReader dbDataReader = dbCommand.ExecuteReader())
+            dbCommand.ExecuteReader(dbDataReader =>
             {
                 consumer.Invoke(new DatasetDataReader(dbDataReader, dbCommand.BindStrategy));
-            }
+            });
         }
 
         public T OpenAndFetch<T>()

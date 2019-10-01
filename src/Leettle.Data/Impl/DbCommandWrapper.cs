@@ -1,32 +1,33 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Text.RegularExpressions;
 
 namespace Leettle.Data.Impl
 {
-    class DbCommandWrapper : IDisposable
+    class DbCommandWrapper
     {
-        private DbCommand dbCommand;
+        private readonly Connection connection;
         public BindStrategy BindStrategy { get; }
-        public DbCommandWrapper(DbCommand dbCommand, BindStrategy bindStrategy)
-        {
-            this.dbCommand = dbCommand;
-            this.BindStrategy = bindStrategy;
-        }
+        private readonly string sql;
+        private Dictionary<string, object> parameters;
 
-        public virtual void Dispose()
+        public DbCommandWrapper(Connection connection, BindStrategy bindStrategy, string sql)
         {
-            LeettleDbUtil.DisposeSilently(dbCommand);
+            this.connection = connection;
+            this.BindStrategy = bindStrategy;
+            this.sql = sql;
         }
 
         public DbCommandWrapper AddParam(string paramName, object paramValue)
         {
             Assert.NotNull(paramName, "paramName must not be null");
+            if (parameters == null)
+            {
+                parameters = new Dictionary<string, object>();
+            }
+            parameters.Add(paramName, paramValue);
 
-            var dbParam = dbCommand.CreateParameter();
-            dbParam.ParameterName = paramName;
-            dbParam.Value = paramValue == null ? DBNull.Value : paramValue;
-            dbCommand.Parameters.Add(dbParam);
             return this;
         }
 
@@ -36,7 +37,7 @@ namespace Leettle.Data.Impl
 
             Type paramType = paramObject.GetType();
 
-            var matches = new Regex("(" + BindStrategy.ParameterMarker + "[A-Za-z0-9_$#]*)").Matches(dbCommand.CommandText);
+            var matches = new Regex("(" + BindStrategy.ParameterMarker + "[A-Za-z0-9_$#]*)").Matches(sql);
             foreach (var match in matches)
             {
                 string parameterName = match.ToString().Substring(1);
@@ -52,31 +53,52 @@ namespace Leettle.Data.Impl
             return this;
         }
 
-        public int ExecuteNonQuery()
+        private void SetDbCommandParam(DbCommand dbCommand)
         {
-            try
+            if (parameters != null)
             {
-                int affected = dbCommand.ExecuteNonQuery();
-
-                dbCommand.Parameters.Clear();
-
-                return affected;
-            }
-            catch (Exception e)
-            {
-                throw LeettleDbQueryException.Wrap(e, dbCommand);
+                foreach (var parameter in parameters)
+                {
+                    var dbParam = dbCommand.CreateParameter();
+                    dbParam.ParameterName = parameter.Key;
+                    dbParam.Value = parameter.Value ?? DBNull.Value;
+                    dbCommand.Parameters.Add(dbParam);
+                }
             }
         }
 
-        public DbDataReader ExecuteReader()
+        public int ExecuteNonQuery()
         {
-            try
+            using (var dbCommand = connection.CreateDbCommand(sql))
             {
-                return dbCommand.ExecuteReader();
+                try
+                {
+                    SetDbCommandParam(dbCommand);
+                    return dbCommand.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+                    throw LeettleDbQueryException.Wrap(e, dbCommand);
+                }
             }
-            catch (Exception e)
+        }
+
+        public void ExecuteReader(Action<DbDataReader> consumer)
+        {
+            using (var dbCommand = connection.CreateDbCommand(sql))
             {
-                throw LeettleDbQueryException.Wrap(e, dbCommand);
+                try
+                {
+                    SetDbCommandParam(dbCommand);
+                    using (var dbReader = dbCommand.ExecuteReader())
+                    {
+                        consumer.Invoke(dbReader);
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw LeettleDbQueryException.Wrap(e, dbCommand);
+                }
             }
         }
     }

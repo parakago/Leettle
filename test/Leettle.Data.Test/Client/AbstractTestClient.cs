@@ -187,8 +187,10 @@ namespace Leettle.Data.Test.Client
 
                 InsertToTestTable(con, testTableItem);
 
-                var camelTableItem = new TestTableCamelCaseItem();
-                camelTableItem.VString = testTableItem.v_string;
+                var camelTableItem = new TestTableCamelCaseItem()
+                {
+                    VString = testTableItem.v_string
+                };
 
                 string sql = ToProperSql(string.Format("SELECT * FROM {0} WHERE v_string = :v_string", TEST_TABLE_NAME));
                 var fetched = con.NewDataset(sql)
@@ -210,6 +212,7 @@ namespace Leettle.Data.Test.Client
 
     class TestTableSnakeCaseItem
     {
+#pragma warning disable IDE1006
         public string v_string { get; set; }
         public short v_short { get; set; }
         public int v_int { get; set; }
@@ -219,6 +222,7 @@ namespace Leettle.Data.Test.Client
         public DateTime v_date_time { get; set; }
         public byte[] v_blob { get; set; }
         public string v_long_text { get; set; }
+#pragma warning restore IDE1006
     }
 
     class TestTableCamelCaseItem
