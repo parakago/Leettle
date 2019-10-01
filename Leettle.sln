@@ -16,6 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Leettle.Data", "src\Leettle.Data\Leettle.Data.csproj", "{6931B544-C3AA-4602-A821-C98102B6D81F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leettle.Data.Example", "test\Leettle.Data.Example\Leettle.Data.Example.csproj", "{4F9E5CAD-94E4-4329-BA12-7570C1D4D706}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +32,10 @@ Global
 		{6931B544-C3AA-4602-A821-C98102B6D81F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6931B544-C3AA-4602-A821-C98102B6D81F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6931B544-C3AA-4602-A821-C98102B6D81F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F9E5CAD-94E4-4329-BA12-7570C1D4D706}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F9E5CAD-94E4-4329-BA12-7570C1D4D706}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F9E5CAD-94E4-4329-BA12-7570C1D4D706}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F9E5CAD-94E4-4329-BA12-7570C1D4D706}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -37,6 +43,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{9D600050-0747-4C85-99CD-5090024E6E10} = {FC31A245-0D4F-46DC-8442-3D56C31FB8A5}
 		{6931B544-C3AA-4602-A821-C98102B6D81F} = {0F361FA5-DF26-426F-82B9-D695E46B74FF}
+		{4F9E5CAD-94E4-4329-BA12-7570C1D4D706} = {FC31A245-0D4F-46DC-8442-3D56C31FB8A5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D8AE1503-8C12-4DDE-81A2-0012A5817313}
