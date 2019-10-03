@@ -1,7 +1,7 @@
 # LeettleDB
 
 ## Introduction
-LeettleDB is a C# [ADO.NET](https://docs.microsoft.com/dotnet/framework/data/adonet) wrapper library to provide same(?) api for different types of database providers and useful method that maps fetched result to a POCO.
+LeettleDB is a C# [ADO.NET](https://docs.microsoft.com/dotnet/framework/data/adonet) wrapper library to provide simple and easy api for different types of database providers and useful method that maps fetched result to a POCO.
 
 ## Example
 * Creating leettleDB object
@@ -59,6 +59,9 @@ using (var con = leettleDb.OpenConnection())
     });
 }
 ```
+
+Check out [Getting Started](https://github.com/parakago/Leettle.Data/wiki/Getting-started) page.
+
 ## Installation
 * install Leettle.Data package through the nuget.
 * install ado.net data provider that what you want. (following data providers were tested)
