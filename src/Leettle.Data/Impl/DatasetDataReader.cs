@@ -9,7 +9,7 @@ namespace Leettle.Data.Impl
     class DatasetDataReader : IDatasetDataReader
     {
         public DbDataReader DbDataReader { get; }
-        private BindStrategy bindStrategy;
+        private readonly BindStrategy bindStrategy;
         private Dictionary<int, PropertyInfo> fieldMappingInfo;
 
         public DatasetDataReader(DbDataReader dbDataReader, BindStrategy bindStrategy)

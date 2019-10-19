@@ -2,14 +2,14 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard1.3;net451</TargetFrameworks>
-    <Version>0.5.3</Version>
+    <Version>0.5.4</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Authors>Parakago</Authors>
     <Product>LeettleDB</Product>
     <Description>a small library for ADO.NET</Description>
 	  <PackageTags>ADO.NET wrapper library database db</PackageTags>
-	  <PackageProjectUrl>https://github.com/parakago/LeettleDB</PackageProjectUrl>
+	  <PackageProjectUrl>https://github.com/parakago/Leettle.Data</PackageProjectUrl>
 	  <RepositoryUrl></RepositoryUrl>
 	  <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
   </PropertyGroup>

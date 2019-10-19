@@ -7,9 +7,9 @@ namespace Leettle.Data
 {
     public class FileSystemSqlProvider : IPreparedSqlProvider
     {
-        private Dictionary<string, SqlFile> sqlFiles = new Dictionary<string, SqlFile>();
+        private readonly Dictionary<string, SqlFile> sqlFiles = new Dictionary<string, SqlFile>();
 
-        private string sqlFileFolderPath;
+        private readonly string sqlFileFolderPath;
         
         public FileSystemSqlProvider(string sqlFileFolderPath, bool reloadable = true)
         {
@@ -37,8 +37,7 @@ namespace Leettle.Data
 
             string groupId = s[0].ToLower();
 
-            SqlFile sqlFile;
-            if (!sqlFiles.TryGetValue(groupId, out sqlFile))
+            if (!sqlFiles.TryGetValue(groupId, out SqlFile sqlFile))
             {
                 throw new Exception("can't find sqlFile: " + Path.Combine(sqlFileFolderPath, groupId + ".xml"));
             }
@@ -52,11 +51,11 @@ namespace Leettle.Data
     {
         public string GroupId { get; }
 
-        private string sqlFilePath;
-        private bool reloadable;
+        private readonly string sqlFilePath;
+        private readonly bool reloadable;
         private DateTime lastWriteTime;
         private DateTime lastCheckTime;
-        private Dictionary<string, string> sqlItems = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> sqlItems = new Dictionary<string, string>();
 
         private SqlFile(string sqlFilePath, bool reloadable)
         {
@@ -71,8 +70,7 @@ namespace Leettle.Data
         {
             CheckSqlFileChanged();
 
-            string sql;
-            if (!sqlItems.TryGetValue(sqlItemId, out sql))
+            if (!sqlItems.TryGetValue(sqlItemId, out string sql))
             {
                 throw new Exception(string.Format("sql '{0}' not found in {1}.xml", sqlItemId, GroupId));
             }
