@@ -49,7 +49,7 @@ namespace Leettle.Data.Impl
                     AddParam(parameterName, paramValue);
                 }
             }
-            
+
             return this;
         }
 

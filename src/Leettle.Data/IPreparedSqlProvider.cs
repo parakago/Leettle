@@ -1,11 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Leettle.Data
+﻿namespace Leettle.Data
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IPreparedSqlProvider
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sqlId"></param>
+        /// <returns></returns>
         string GetSql(string sqlId);
     }
 }

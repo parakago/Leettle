@@ -4,8 +4,16 @@ using System.Reflection;
 
 namespace Leettle.Data
 {
-    public class LeettleDbUtil
+    /// <summary>
+    /// 
+    /// </summary>
+    public static class LeettleDbUtil
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposable"></param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<보류 중>")]
         public static void DisposeSilently(IDisposable disposable)
         {
             try
@@ -17,10 +25,15 @@ namespace Leettle.Data
             }
             catch
             {
-                
+                // do nothing
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="snakeCaseVar"></param>
+        /// <returns></returns>
         public static string SnakeToCamel(string snakeCaseVar)
         {
             if (string.IsNullOrWhiteSpace(snakeCaseVar))
@@ -35,6 +48,11 @@ namespace Leettle.Data
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="camelCaseVar"></param>
+        /// <returns></returns>
         public static string CamelToSnake(string camelCaseVar)
         {
             if (string.IsNullOrWhiteSpace(camelCaseVar))
@@ -47,6 +65,12 @@ namespace Leettle.Data
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="t"></param>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
         public static PropertyInfo FindProperty(Type t, string propertyName)
         {
             foreach (var propertyInfo in t.GetTypeInfo().DeclaredProperties)
@@ -59,6 +83,12 @@ namespace Leettle.Data
             return null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="p"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
         public static bool IsSubclassOf(Type p, Type c)
         {
             if (p == c)

@@ -1,16 +1,24 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using System.Xml.XPath;
 
 namespace Leettle.Data
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class FileSystemSqlProvider : IPreparedSqlProvider
     {
         private readonly Dictionary<string, SqlFile> sqlFiles = new Dictionary<string, SqlFile>();
 
         private readonly string sqlFileFolderPath;
-        
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sqlFileFolderPath"></param>
+        /// <param name="reloadable"></param>
         public FileSystemSqlProvider(string sqlFileFolderPath, bool reloadable = true)
         {
             Assert.NotNull(sqlFileFolderPath, "sqlFileFolderPath must not be null.");
@@ -27,6 +35,11 @@ namespace Leettle.Data
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sqlId"></param>
+        /// <returns></returns>
         public string GetSql(string sqlId)
         {
             string[] s = sqlId.Split('.');
@@ -103,9 +116,9 @@ namespace Leettle.Data
             {
                 sqlItems.Clear();
             }
-            
+
             XPathNavigator navi = new XPathDocument(sqlFilePath).CreateNavigator();
-            for (var it = navi.Select("/sqls/sql"); it.MoveNext(); )
+            for (var it = navi.Select("/sqls/sql"); it.MoveNext();)
             {
                 string sqlItemId = it.Current.GetAttribute("id", string.Empty);
                 string sql = it.Current.Value.Trim();

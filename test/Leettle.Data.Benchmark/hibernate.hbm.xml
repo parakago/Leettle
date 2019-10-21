@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" auto-import="true"
+                   assembly="Leettle.Data.Benchmark" namespace="Leettle.Data.Benchmark">
+  <class name="User" table="BT_USER">
+    <meta attribute="class-description">
+      user class
+    </meta>
+    <id name="ID" column="ID" type="int">
+      <generator class="native"/>
+    </id>
+
+    <property name="NAME" column="NAME" type="string"/>
+    <property name="AGE" column="AGE" type="int"/>
+    <property name="ADDR1" column="ADDR1" type="string"/>
+    <property name="ADDR2" column="ADDR2" type="string"/>
+    <property name="FCDT" column="FCDT" type="datetime"/>
+    <property name="LUDT" column="LUDT" type="datetime"/>
+  </class>
+</hibernate-mapping>

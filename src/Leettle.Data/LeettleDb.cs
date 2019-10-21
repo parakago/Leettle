@@ -1,7 +1,14 @@
 ﻿namespace Leettle.Data
 {
-    public interface LeettleDb
+    /// <summary>
+    /// 
+    /// </summary>
+    public abstract class LeettleDb
     {
-        IConnection OpenConnection();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public abstract IConnection OpenConnection();
     }
 }

@@ -3,12 +3,12 @@ using System.Data.Common;
 
 namespace Leettle.Data.Impl
 {
-    public class LeettleDbImpl : LeettleDb
+    class LeettleDbImpl : LeettleDb
     {
-        private string connectionString;
-        private Type dbConnectionType;
-        private BindStrategy bindStrategy;
-        private IPreparedSqlProvider sqlProvider;
+        private readonly string connectionString;
+        private readonly Type dbConnectionType;
+        private readonly BindStrategy bindStrategy;
+        private readonly IPreparedSqlProvider sqlProvider;
 
         public LeettleDbImpl(string connectionString, Type dbConnectionType, BindStrategy bindStrategy, IPreparedSqlProvider sqlProvider)
         {
@@ -18,7 +18,7 @@ namespace Leettle.Data.Impl
             this.sqlProvider = sqlProvider;
         }
 
-        public IConnection OpenConnection()
+        public override IConnection OpenConnection()
         {
             var dbConnection = (DbConnection)Activator.CreateInstance(dbConnectionType);
             dbConnection.ConnectionString = connectionString;

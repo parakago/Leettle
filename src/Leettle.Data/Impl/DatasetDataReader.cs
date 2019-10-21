@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
-using System.Reflection;
 
 namespace Leettle.Data.Impl
 {
@@ -10,7 +9,7 @@ namespace Leettle.Data.Impl
     {
         public DbDataReader DbDataReader { get; }
         private readonly BindStrategy bindStrategy;
-        private Dictionary<int, PropertyInfo> fieldMappingInfo;
+        private object fieldPropMappings;
 
         public DatasetDataReader(DbDataReader dbDataReader, BindStrategy bindStrategy)
         {
@@ -78,42 +77,41 @@ namespace Leettle.Data.Impl
 
         public T Fetch<T>()
         {
-            if (fieldMappingInfo == null)
+            if (fieldPropMappings == null)
             {
-                fieldMappingInfo = ExtractFieldMappingInfo<T>();
+                fieldPropMappings = ExtractFieldMappingInfo<T>();
             }
 
             T target = (T)Activator.CreateInstance(typeof(T));
-            foreach (var pair in fieldMappingInfo)
+
+            foreach (var fieldPropMapping in (List<FieldPropMapping<T>>)fieldPropMappings)
             {
-                int columnIndex = pair.Key;
-                object columnValue = DbDataReader.IsDBNull(columnIndex) ? null : DbDataReader.GetValue(columnIndex);
+                object columnValue = DbDataReader.IsDBNull(fieldPropMapping.FieldIndex) ? null : DbDataReader.GetValue(fieldPropMapping.FieldIndex);
                 if (columnValue != null)
                 {
-                    PropertyInfo propertyInfo = pair.Value;
-                    columnValue = Convert.ChangeType(columnValue, propertyInfo.PropertyType);
-                    propertyInfo.SetValue(target, columnValue, null);
+                    fieldPropMapping.SetValue(target, columnValue);
                 }
             }
+
             return target;
         }
 
-        public Dictionary<int, PropertyInfo> ExtractFieldMappingInfo<T>()
+        public List<FieldPropMapping<T>> ExtractFieldMappingInfo<T>()
         {
-            var fieldMappingInfo = new Dictionary<int, PropertyInfo>(DbDataReader.FieldCount);
+            var fieldPropMappings = new List<FieldPropMapping<T>>(DbDataReader.FieldCount);
 
             for (int i = 0; i < DbDataReader.FieldCount; ++i)
             {
                 string columnName = DbDataReader.GetName(i);
                 string propertyName = bindStrategy.ToPropertyName(columnName);
-                var propInfo = LeettleDbUtil.FindProperty(typeof(T), propertyName);
-                if (propInfo != null)
+                var propertyInfo = LeettleDbUtil.FindProperty(typeof(T), propertyName);
+                if (propertyInfo != null)
                 {
-                    fieldMappingInfo.Add(i, propInfo);
+                    fieldPropMappings.Add(new FieldPropMapping<T>(i, propertyInfo));
                 }
             }
 
-            return fieldMappingInfo;
+            return fieldPropMappings;
         }
     }
 }

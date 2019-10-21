@@ -4,6 +4,9 @@ using System.Data.Common;
 
 namespace Leettle.Data
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class LeettleDbBuilder
     {
         private string connectionString;
@@ -11,6 +14,11 @@ namespace Leettle.Data
         private BindStrategy bindStrategy;
         private IPreparedSqlProvider sqlProvider;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connectionString"></param>
+        /// <returns></returns>
         public LeettleDbBuilder WithConnectionString(string connectionString)
         {
             Assert.NotNull(connectionString, "connectionString must not be null");
@@ -18,15 +26,26 @@ namespace Leettle.Data
             this.connectionString = connectionString;
             return this;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dbConnectionType"></param>
+        /// <returns></returns>
         public LeettleDbBuilder WithConnectionType(Type dbConnectionType)
         {
             Assert.NotNull(dbConnectionType, "dbConnectionType must not be null");
-            Assert.isAssignable(typeof(DbConnection), dbConnectionType, "dbConnectionType must be subtype of System.Data.Common.DbConnection");
+            Assert.IsAssignable(typeof(DbConnection), dbConnectionType, "dbConnectionType must be subtype of System.Data.Common.DbConnection");
 
             this.dbConnectionType = dbConnectionType;
             return this;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="bindStrategy"></param>
+        /// <returns></returns>
         public LeettleDbBuilder WithBindStrategy(BindStrategy bindStrategy)
         {
             Assert.NotNull(bindStrategy, "bindStrategy must not be null");
@@ -34,6 +53,11 @@ namespace Leettle.Data
             return this;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sqlProvider"></param>
+        /// <returns></returns>
         public LeettleDbBuilder WithPrepqredSqlProvider(IPreparedSqlProvider sqlProvider)
         {
             Assert.NotNull(sqlProvider, "queryProvider must not be null");
@@ -41,6 +65,10 @@ namespace Leettle.Data
             return this;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public LeettleDb Build()
         {
             Assert.NotNull(connectionString, "connectionString must not be null; use WithConnectionString");

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-configuration xmlns="urn:nhibernate-configuration-2.2">
+  <session-factory>
+    <property name="connection.provider">
+      NHibernate.Connection.DriverConnectionProvider
+    </property>
+    <property name="dialect">
+      NHibernate.Dialect.OracleLiteDialect
+    </property>
+    <property name="connection.driver_class">
+      NHibernate.Driver.OracleManagedDataClientDriver
+    </property>
+    <property name="connection.connection_string">
+      Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.10.19)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=XE)));User Id=donkey;Password=donkey;
+    </property>
+    <mapping assembly="Leettle.Data.Benchmark"/>
+  </session-factory>
+</hibernate-configuration>

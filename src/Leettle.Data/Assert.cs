@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Leettle.Data
 {
@@ -16,7 +12,7 @@ namespace Leettle.Data
             }
         }
 
-        public static void isAssignable(Type superType, Type subType, string message)
+        public static void IsAssignable(Type superType, Type subType, string message)
         {
             if (!LeettleDbUtil.IsSubclassOf(subType, superType))
             {

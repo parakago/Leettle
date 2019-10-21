@@ -8,6 +8,7 @@ namespace Leettle.Data.Impl
         private readonly DbConnection dbCon;
         private readonly BindStrategy bindStrategy;
         private readonly IPreparedSqlProvider sqlProvider;
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("코드 품질", "IDE0069:삭제 가능한 필드는 삭제해야 합니다.", Justification = "<보류 중>")]
         private DbTransaction dbTrans;
 
         public Connection(DbConnection dbCon, BindStrategy bindStrategy, IPreparedSqlProvider sqlProvider)
@@ -22,6 +23,7 @@ namespace Leettle.Data.Impl
             dbCon.Dispose();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "<보류 중>")]
         public DbCommand CreateDbCommand(string sql)
         {
             var dbCmd = dbCon.CreateCommand();
