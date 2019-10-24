@@ -55,7 +55,7 @@ namespace Leettle.Data.Benchmark
                 con.NewCommand("CREATE TABLE BT_USER (ID NUMBER, NAME VARCHAR2(128), AGE NUMBER, ADDR1 VARCHAR2(256), ADDR2 VARCHAR2(256), FCDT DATE, LUDT DATE)").Execute();
                 con.RunInTransaction((tx) =>
                 {
-                    for (int i = 0; i < 100000; ++i)
+                    for (int i = 0; i < 10000; ++i)
                     {
                         con.NewCommand("INSERT INTO BT_USER VALUES (:ID, :NAME, :AGE, :ADDR1, :ADDR2, :FCDT, :LUDT)")
                             .BindParam(User.NewUser(i))
@@ -84,7 +84,59 @@ namespace Leettle.Data.Benchmark
         }
 
         [Benchmark]
+        public void SelectAndFetchWithLeettleRawByIndex()
+        {
+            using (var con = leettleDb.OpenConnection())
+            {
+                List<User> users = new List<User>();
+                con.NewDataset("SELECT ID, NAME, AGE, ADDR1, ADDR2, FCDT, LUDT FROM BT_USER").Open(dr =>
+                {
+                    while (dr.Next())
+                    {
+                        users.Add(new User
+                        {
+                            ID = dr.GetInt(0),
+                            NAME = dr.GetString(1),
+                            AGE = dr.GetInt(2),
+                            ADDR1 = dr.GetString(3),
+                            ADDR2 = dr.GetString(4),
+                            FCDT = dr.GetDateTime(5),
+                            LUDT = dr.GetDateTime(6)
+                        });
+                    }
+                });
+            }
+        }
+
+        [Benchmark]
+        public void SelectAndFetchWithLeettleRawByName()
+        {
+            using (var con = leettleDb.OpenConnection())
+            {
+                List<User> users = new List<User>();
+                con.NewDataset("SELECT ID, NAME, AGE, ADDR1, ADDR2, FCDT, LUDT FROM BT_USER").Open(dr =>
+                {
+                    while (dr.Next())
+                    {
+                        users.Add(new User
+                        {
+                            ID = dr.GetInt("ID"),
+                            NAME = dr.GetString("NAME"),
+                            AGE = dr.GetInt("AGE"),
+                            ADDR1 = dr.GetString("ADDR1"),
+                            ADDR2 = dr.GetString("ADDR2"),
+                            FCDT = dr.GetDateTime("FCDT"),
+                            LUDT = dr.GetDateTime("LUDT")
+                        }); 
+                    }
+                });
+            }
+        }
+
+        [Benchmark(Baseline = true)]
+#pragma warning disable CA1822 // Mark members as static
         public void SelectAndFetchWithOMDA()
+#pragma warning restore CA1822 // Mark members as static
         {
             List<User> users = new List<User>();
 
