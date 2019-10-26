@@ -60,15 +60,15 @@ using (var con = leettleDb.OpenConnection())
 }
 ```
 
-* Performance Benchmarking Test
+Check out [Getting Started](https://github.com/parakago/Leettle.Data/wiki/Getting-started) page.
+
+## Performance Benchmarking Test
 
 |                             Method |      Mean |     Error |    StdDev | Ratio | RatioSD |
 |----------------------------------- |----------:|----------:|----------:|------:|--------:|
 |  Oracle Managed Data Direct Access |  25.17 ms | 0.4836 ms | 0.5939 ms |  1.00 |    0.00 |
 |                       Leettle.Data |  47.93 ms | 0.8731 ms | 1.2522 ms |  1.90 |    0.06 |
 |                         NHibernate | 135.91 ms | 2.6873 ms | 6.0657 ms |  5.39 |    0.28 |
-
-Check out [Getting Started](https://github.com/parakago/Leettle.Data/wiki/Getting-started) page.
 
 ## Installation
 * install Leettle.Data package through the nuget.
