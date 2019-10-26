@@ -1,27 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Leettle.Data.Test.Client
+﻿namespace Leettle.Data.Test.Client
 {
     class PostgresTestClient : AbstractTestClient
     {
-        public PostgresTestClient(string connectionString) : base(connectionString, typeof(Npgsql.NpgsqlConnection))
-        {
-            SqlCreateTable = string.Format(@"
-create table {0} (
-    v_string    varchar(128),
-    v_short     smallint,
-    v_int       integer,
-    v_long      bigint,
-    v_double    numeric(15, 9),
-    v_decimal   numeric(28, 7),
-    v_date_time timestamp,
-    v_blob      bytea,
-    v_long_text text
-)", TEST_TABLE_NAME).Trim();
-        }
+        public override string StringDataType { get { return "varchar"; } }
+        public override string ShortDataType { get { return "smallint"; } }
+        public override string IntDataType { get { return "integer"; } }
+        public override string LongDataType { get { return "bigint"; } }
+        public override string DoubleDataType { get { return "numeric(15, 9)"; } }
+        public override string DecimalDataType { get { return "numeric(28, 7)"; } }
+        public override string DateTimeDataType { get { return "timestamp"; } }
+        public override string BlobDataType { get { return "bytea"; } }
+        public override string LongTextDataType { get { return "text"; } }
+        public PostgresTestClient(string connectionString) : base(connectionString, typeof(Npgsql.NpgsqlConnection)) { }
     }
 }

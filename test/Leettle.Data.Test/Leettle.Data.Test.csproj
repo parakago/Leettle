@@ -105,6 +105,7 @@
     <Compile Include="FileSystemSqlProviderTest.cs" />
     <Compile Include="OpenAndFetchScalarTest.cs" />
     <Compile Include="OpenAndFetchListTest.cs" />
+    <Compile Include="NullValueTest.cs" />
     <Compile Include="OpenTest.cs" />
     <Compile Include="Client\AbstractTestClient.cs" />
     <Compile Include="BindStrategyTest.cs" />

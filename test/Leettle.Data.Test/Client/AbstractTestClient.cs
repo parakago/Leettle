@@ -19,6 +19,16 @@ namespace Leettle.Data.Test.Client
         public string SqlInsertInto { get; }
         public char ParameterMarker { get; }
 
+        public abstract string StringDataType { get; }
+        public abstract string ShortDataType { get; }
+        public abstract string IntDataType { get; }
+        public abstract string LongDataType { get; }
+        public abstract string DoubleDataType { get; }
+        public abstract string DecimalDataType { get; }
+        public abstract string DateTimeDataType { get; }
+        public abstract string BlobDataType { get; }
+        public abstract string LongTextDataType { get; }
+
         delegate void TestTask(IConnection con);
 
         public AbstractTestClient(string connectionString, Type dbConnectionType) : this(connectionString, dbConnectionType, ':')
@@ -31,12 +41,26 @@ namespace Leettle.Data.Test.Client
             ConnectionString = connectionString;
             DbConnectionType = dbConnectionType;
             ParameterMarker = parameterMarker;
-
+            SqlCreateTable = string.Format(
+                "create table {0} (" + Environment.NewLine +
+                "    v_string    {1}(128)," + Environment.NewLine +
+                "    v_short     {2}," + Environment.NewLine +
+                "    v_int       {3}," + Environment.NewLine +
+                "    v_long      {4}," + Environment.NewLine +
+                "    v_double    {5}," + Environment.NewLine +
+                "    v_decimal   {6}," + Environment.NewLine +
+                "    v_date_time {7}," + Environment.NewLine +
+                "    v_blob      {8}," + Environment.NewLine +
+                "    v_long_text {9} " + Environment.NewLine +
+                ")", TEST_TABLE_NAME, StringDataType, ShortDataType, IntDataType, LongDataType, DoubleDataType, DecimalDataType, DateTimeDataType, BlobDataType, LongTextDataType);
             SqlDropTable = "drop table " + TEST_TABLE_NAME;
-            SqlInsertInto = "insert into " + TEST_TABLE_NAME + " (" + Environment.NewLine +
-                             "    v_string, v_short, v_int, v_long, v_double, v_decimal, v_date_time, v_blob, v_long_text)" + Environment.NewLine +
-                             "values (" + Environment.NewLine +
-                             "    :v_string, :v_short, :v_int, :v_long, :v_double, :v_decimal, :v_date_time, :v_blob, :v_long_text)";
+            SqlInsertInto = string.Format(
+                "insert into {0} (" + Environment.NewLine +
+                "    v_string, v_short, v_int, v_long, v_double, v_decimal, v_date_time, v_blob, v_long_text" + Environment.NewLine +
+                ")" + Environment.NewLine +
+                "values (" + Environment.NewLine +
+                "    :v_string, :v_short, :v_int, :v_long, :v_double, :v_decimal, :v_date_time, :v_blob, :v_long_text" + Environment.NewLine +
+                ")", TEST_TABLE_NAME);
         }
 
         private string ToProperSql(string sql)
@@ -72,9 +96,14 @@ namespace Leettle.Data.Test.Client
 
         }
 
-        private TestTableSnakeCaseItem CreateNewRandomTestTableItem()
+        private DateTime CurrentDateTimeWithoutMilli()
         {
             DateTime now = DateTime.Now;
+            return now.AddTicks((now.Ticks * -1) % TimeSpan.TicksPerSecond);
+        }
+
+        private TestTableSnakeCaseItem CreateNewRandomTestTableItem()
+        {
             return new TestTableSnakeCaseItem()
             {
                 v_string = "TEST 테스트",
@@ -83,7 +112,7 @@ namespace Leettle.Data.Test.Client
                 v_long = long.MaxValue,
                 v_double = 8.358674532,
                 v_decimal = 9728337.1390397M,
-                v_date_time = now.AddTicks((now.Ticks * -1) % TimeSpan.TicksPerSecond),
+                v_date_time = CurrentDateTimeWithoutMilli(),
                 v_blob = Encoding.UTF8.GetBytes(SqlCreateTable),
                 v_long_text = SqlCreateTable
             };
@@ -208,6 +237,35 @@ namespace Leettle.Data.Test.Client
                 Assert.AreEqual(testTableItem.v_long_text, fetched.VLongText);
             });
         }
+
+        public void TestNullValue()
+        {
+            RunTest(new CamelObjectSnakeDbBindStrategy(ParameterMarker), (con) =>
+            {
+                var nullItem = new TestTableSnakeCaseItem();
+                if (DbConnectionType == typeof(System.Data.SqlClient.SqlConnection))
+                {
+                    nullItem.v_date_time = CurrentDateTimeWithoutMilli();
+                    nullItem.v_blob = new byte[0];
+                }
+                
+                InsertToTestTable(con, nullItem);
+
+                string sql = ToProperSql(string.Format("SELECT * FROM {0}", TEST_TABLE_NAME));
+                var fetched = con.NewDataset(sql)
+                    .OpenAndFetch<TestTableCamelCaseItem>();
+                Assert.AreEqual(nullItem.v_string, fetched.VString);
+                Assert.AreEqual(nullItem.v_short, fetched.VShort);
+                Assert.AreEqual(nullItem.v_int, fetched.VInt);
+                Assert.AreEqual(nullItem.v_long, fetched.VLong);
+                Assert.AreEqual(nullItem.v_double, fetched.VDouble);
+                Assert.AreEqual(nullItem.v_decimal, fetched.VDecimal);
+                Assert.AreEqual(nullItem.v_date_time, fetched.VDateTime);
+                CollectionAssert.AreEqual(nullItem.v_blob, fetched.VBlob);
+                Assert.AreEqual(nullItem.v_long_text, fetched.VLongText);
+            });
+        }
+
     }
 
     class TestTableSnakeCaseItem

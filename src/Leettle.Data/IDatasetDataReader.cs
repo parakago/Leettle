@@ -12,7 +12,7 @@ namespace Leettle.Data
         /// <summary>
         /// 
         /// </summary>
-        DbDataReader DbDataReader { get; }
+        DbDataReader DataReader { get; }
 
         /// <summary>
         /// 

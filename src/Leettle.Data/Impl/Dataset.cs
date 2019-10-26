@@ -65,7 +65,7 @@ namespace Leettle.Data.Impl
             {
                 if (dr.Next())
                 {
-                    result = dr.DbDataReader[0];
+                    result = dr.DataReader[0];
                 }
             });
 
@@ -79,7 +79,7 @@ namespace Leettle.Data.Impl
             {
                 while (dr.Next())
                 {
-                    list.Add((T)Convert.ChangeType(dr.DbDataReader[0], typeof(T)));
+                    list.Add((T)Convert.ChangeType(dr.DataReader[0], typeof(T)));
                 }
             });
             return list;

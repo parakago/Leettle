@@ -1,27 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Leettle.Data.Test.Client
+﻿namespace Leettle.Data.Test.Client
 {
     class OracleTestClient : AbstractTestClient
     {
-        public OracleTestClient(string connectionString) : base(connectionString, typeof(Oracle.ManagedDataAccess.Client.OracleConnection))
-        {
-            SqlCreateTable = string.Format(@"
-create table {0} (
-    v_string    varchar2(128),
-    v_short     number(5),
-    v_int       number(10),
-    v_long      number(20),
-    v_double    number(15,9),
-    v_decimal   number(28,7),
-    v_date_time date,
-    v_blob      blob,
-    v_long_text clob
-)", TEST_TABLE_NAME).Trim();
-        }
+        public override string StringDataType { get { return "varchar2"; } }
+        public override string ShortDataType { get { return "number(5)"; } }
+        public override string IntDataType { get { return "number(10)"; } }
+        public override string LongDataType { get { return "number(20)"; } }
+        public override string DoubleDataType { get { return "number(15, 9)"; } }
+        public override string DecimalDataType { get { return "number(28, 7)"; } }
+        public override string DateTimeDataType { get { return "date"; } }
+        public override string BlobDataType { get { return "blob"; } }
+        public override string LongTextDataType { get { return "clob"; } }
+        public OracleTestClient(string connectionString) : base(connectionString, typeof(Oracle.ManagedDataAccess.Client.OracleConnection)) { }
     }
 }

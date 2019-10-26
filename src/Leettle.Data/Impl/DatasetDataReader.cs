@@ -7,28 +7,28 @@ namespace Leettle.Data.Impl
 {
     class DatasetDataReader : IDatasetDataReader
     {
-        public DbDataReader DbDataReader { get; }
+        public DbDataReader DataReader { get; }
         private readonly BindStrategy bindStrategy;
         private object fieldPropMappings;
         private Dictionary<string, int> ordinalMappings;
 
-        public DatasetDataReader(DbDataReader dbDataReader, BindStrategy bindStrategy)
+        public DatasetDataReader(DbDataReader dataReader, BindStrategy bindStrategy)
         {
-            this.DbDataReader = dbDataReader;
+            this.DataReader = dataReader;
             this.bindStrategy = bindStrategy;
         }
 
         public bool Next()
         {
-            return DbDataReader.Read();
+            return DataReader.Read();
         }
 
-        private int GetOrdinal(string colName)
+        private int FindOrdinal(string colName)
         {
             if (ordinalMappings == null) ordinalMappings = new Dictionary<string, int>();
             if (!ordinalMappings.TryGetValue(colName, out int ordinal))
             {
-                ordinal = DbDataReader.GetOrdinal(colName);
+                ordinal = DataReader.GetOrdinal(colName);
                 ordinalMappings.Add(colName, ordinal);
             }
             return ordinal;
@@ -36,52 +36,52 @@ namespace Leettle.Data.Impl
 
         public object GetObject(string colName)
         {
-            return GetObject(GetOrdinal(colName));
+            return GetObject(FindOrdinal(colName));
         }
 
         public string GetString(string colName)
         {
-            return GetString(GetOrdinal(colName));
+            return GetString(FindOrdinal(colName));
         }
 
         public short GetShort(string colName)
         {
-            return GetShort(GetOrdinal(colName));
+            return GetShort(FindOrdinal(colName));
         }
 
         public int GetInt(string colName)
         {
-            return GetInt(GetOrdinal(colName));
+            return GetInt(FindOrdinal(colName));
         }
 
         public long GetLong(string colName)
         {
-            return GetLong(GetOrdinal(colName));
+            return GetLong(FindOrdinal(colName));
         }
 
         public decimal GetDecimal(string colName)
         {
-            return GetDecimal(GetOrdinal(colName));
+            return GetDecimal(FindOrdinal(colName));
         }
 
         public double GetDouble(string colName)
         {
-            return GetDouble(GetOrdinal(colName));
+            return GetDouble(FindOrdinal(colName));
         }
 
         public DateTime GetDateTime(string colName)
         {
-            return GetDateTime(GetOrdinal(colName));
+            return GetDateTime(FindOrdinal(colName));
         }
 
         public byte[] GetBytes(string colName)
         {
-            return GetBytes(GetOrdinal(colName));
+            return GetBytes(FindOrdinal(colName));
         }
 
         public void GetStream(string colName, Stream stream)
         {
-            GetStream(GetOrdinal(colName), stream);
+            GetStream(FindOrdinal(colName), stream);
         }
 
         private static List<FieldPropMapping<T>> ExtractFieldMappingInfo<T>(DbDataReader reader, BindStrategy bindStrategy)
@@ -106,14 +106,14 @@ namespace Leettle.Data.Impl
         {
             if (fieldPropMappings == null)
             {
-                fieldPropMappings = ExtractFieldMappingInfo<T>(DbDataReader, bindStrategy);
+                fieldPropMappings = ExtractFieldMappingInfo<T>(DataReader, bindStrategy);
             }
 
             T target = (T)Activator.CreateInstance(typeof(T));
 
             foreach (var fieldPropMapping in (List<FieldPropMapping<T>>)fieldPropMappings)
             {
-                object columnValue = DbDataReader.IsDBNull(fieldPropMapping.FieldIndex) ? null : DbDataReader.GetValue(fieldPropMapping.FieldIndex);
+                object columnValue = DataReader.IsDBNull(fieldPropMapping.FieldIndex) ? null : DataReader.GetValue(fieldPropMapping.FieldIndex);
                 if (columnValue != null)
                 {
                     fieldPropMapping.SetValue(target, columnValue);
@@ -125,42 +125,42 @@ namespace Leettle.Data.Impl
 
         public object GetObject(int ordinal)
         {
-            return DbDataReader.GetValue(ordinal);
+            return DataReader.GetValue(ordinal);
         }
 
         public string GetString(int ordinal)
         {
-            return DbDataReader.GetString(ordinal);
+            return DataReader.GetString(ordinal);
         }
 
         public short GetShort(int ordinal)
         {
-            return DbDataReader.GetInt16(ordinal);
+            return DataReader.GetInt16(ordinal);
         }
 
         public int GetInt(int ordinal)
         {
-            return DbDataReader.GetInt32(ordinal);
+            return DataReader.GetInt32(ordinal);
         }
 
         public long GetLong(int ordinal)
         {
-            return DbDataReader.GetInt64(ordinal);
+            return DataReader.GetInt64(ordinal);
         }
 
         public decimal GetDecimal(int ordinal)
         {
-            return DbDataReader.GetDecimal(ordinal);
+            return DataReader.GetDecimal(ordinal);
         }
 
         public double GetDouble(int ordinal)
         {
-            return DbDataReader.GetDouble(ordinal);
+            return Convert.ToDouble(DataReader.GetValue(ordinal));
         }
 
         public DateTime GetDateTime(int ordinal)
         {
-            return DbDataReader.GetDateTime(ordinal);
+            return DataReader.IsDBNull(ordinal) ? DateTime.MinValue : DataReader.GetDateTime(ordinal);
         }
 
         public byte[] GetBytes(int ordinal)
