@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data.Common;
+using System.Reflection;
 
 namespace Leettle.Data.Impl
 {
@@ -15,7 +16,7 @@ namespace Leettle.Data.Impl
 
         public ObjectBinder<T> CreateObjectBinder<T>()
         {
-            var fieldPropMappings = new List<FieldPropMapping<T>>(DataReader.FieldCount);
+            var objectBinderPropertyList = new List<ObjectBinderProperty<T>>(DataReader.FieldCount);
 
             for (int i = 0; i < DataReader.FieldCount; ++i)
             {
@@ -24,11 +25,11 @@ namespace Leettle.Data.Impl
                 var propertyInfo = LeettleDbUtil.FindProperty(typeof(T), propertyName);
                 if (propertyInfo != null)
                 {
-                    fieldPropMappings.Add(new FieldPropMapping<T>(i, propertyInfo));
+                    objectBinderPropertyList.Add(new ObjectBinderProperty<T>(i, propertyInfo));
                 }
             }
 
-            return new ObjectBinder<T>(fieldPropMappings.ToArray());
+            return new ObjectBinder<T>(objectBinderPropertyList.ToArray());
         }
     }
 }

@@ -9,12 +9,12 @@ namespace Leettle.Data.Impl
 {
     class ObjectBinder<T>
     {
-        private readonly FieldPropMapping<T>[] fieldPropMappingList;
+        private readonly ObjectBinderProperty<T>[] objectBinderProperties;
         private readonly ObjectDefaultCreator<T> objectCreator;
 
-        public ObjectBinder(FieldPropMapping<T>[] fieldPropMappingList)
+        public ObjectBinder(ObjectBinderProperty<T>[] objectBinderProperties)
         {
-            this.fieldPropMappingList = fieldPropMappingList;
+            this.objectBinderProperties = objectBinderProperties;
             this.objectCreator = LeettleDbUtil.CreateObjectDefaultCreator<T>();
         }
 
@@ -22,12 +22,12 @@ namespace Leettle.Data.Impl
         {
             T target = objectCreator();
 
-            foreach (var fieldPropMapping in fieldPropMappingList)
+            foreach (var objectBinderProperty in objectBinderProperties)
             {
-                object columnValue = dataReader.IsDBNull(fieldPropMapping.FieldIndex) ? null : dataReader.GetValue(fieldPropMapping.FieldIndex);
+                object columnValue = dataReader.IsDBNull(objectBinderProperty.FieldIndex) ? null : dataReader.GetValue(objectBinderProperty.FieldIndex);
                 if (columnValue != null)
                 {
-                    fieldPropMapping.SetValue(target, columnValue);
+                    objectBinderProperty.SetValue(target, columnValue);
                 }
             }
 

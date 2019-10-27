@@ -4,13 +4,13 @@ using System.Reflection;
 
 namespace Leettle.Data.Impl
 {
-    class FieldPropMapping<T>
+    class ObjectBinderProperty<T>
     {
         public int FieldIndex { get; }
         private readonly Action<T, object> setter;
         private readonly PropertyInfo propertyInfo;
 
-        public FieldPropMapping(int fieldIndex, PropertyInfo propertyInfo)
+        public ObjectBinderProperty(int fieldIndex, PropertyInfo propertyInfo)
         {
             this.FieldIndex = fieldIndex;
             this.propertyInfo = propertyInfo;
