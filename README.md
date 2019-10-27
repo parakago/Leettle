@@ -66,9 +66,9 @@ Check out [Getting Started](https://github.com/parakago/Leettle.Data/wiki/Gettin
 
 |                             Method |      Mean |     Error |    StdDev | Ratio | RatioSD |
 |----------------------------------- |----------:|----------:|----------:|------:|--------:|
-|  Oracle Managed Data Direct Access |  25.17 ms | 0.4836 ms | 0.5939 ms |  1.00 |    0.00 |
-|                       Leettle.Data |  47.93 ms | 0.8731 ms | 1.2522 ms |  1.90 |    0.06 |
-|                         NHibernate | 135.91 ms | 2.6873 ms | 6.0657 ms |  5.39 |    0.28 |
+|  Oracle Managed Data Direct Access |  25.34 ms | 0.2826 ms | 0.2644 ms |  1.00 |    0.00 |
+|                       Leettle.Data |  45.31 ms | 0.7139 ms | 0.6678 ms |  1.79 |    0.03 |
+|                         NHibernate | 138.17 ms | 2.7254 ms | 5.1853 ms |  5.47 |    0.21 |
 
 ## Installation
 * install Leettle.Data package through the nuget.
