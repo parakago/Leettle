@@ -83,7 +83,7 @@ namespace Leettle.Data.Impl
             }
         }
 
-        public void ExecuteReader(Action<DbDataReader> consumer)
+        public void ExecuteReader(Action<DbDataReaderWrapper> consumer)
         {
             using (var dbCommand = connection.CreateDbCommand(sql))
             {
@@ -92,7 +92,7 @@ namespace Leettle.Data.Impl
                     SetDbCommandParam(dbCommand);
                     using (var dbReader = dbCommand.ExecuteReader())
                     {
-                        consumer.Invoke(dbReader);
+                        consumer.Invoke(new DbDataReaderWrapper(dbReader, BindStrategy));
                     }
                 }
                 catch (Exception e)

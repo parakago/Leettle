@@ -25,20 +25,20 @@ namespace Leettle.Data.Impl
 
         public void Open(Action<IDatasetDataReader> consumer)
         {
-            dbCommand.ExecuteReader(dbDataReader =>
+            dbCommand.ExecuteReader(dbDataReaderWrapper =>
             {
-                consumer.Invoke(new DatasetDataReader(dbDataReader, dbCommand.BindStrategy));
+                consumer.Invoke(new DatasetDataReader(dbDataReaderWrapper));
             });
         }
 
         public T OpenAndFetch<T>()
         {
             object result = null;
-            Open(dr =>
+            Open(datasetReader =>
             {
-                if (dr.Next())
+                if (datasetReader.Next())
                 {
-                    result = dr.Fetch<T>();
+                    result = datasetReader.Fetch<T>();
                 }
             });
 
@@ -48,11 +48,11 @@ namespace Leettle.Data.Impl
         public List<T> OpenAndFetchList<T>()
         {
             List<T> list = new List<T>();
-            Open(dr =>
+            Open(datasetReader =>
             {
-                while (dr.Next())
+                while (datasetReader.Next())
                 {
-                    list.Add(dr.Fetch<T>());
+                    list.Add(datasetReader.Fetch<T>());
                 }
             });
             return list;
@@ -61,11 +61,11 @@ namespace Leettle.Data.Impl
         public T OpenAndFetchScalar<T>()
         {
             object result = null;
-            Open(dr =>
+            Open(datasetReader =>
             {
-                if (dr.Next())
+                if (datasetReader.Next())
                 {
-                    result = dr.DataReader[0];
+                    result = datasetReader.DataReader[0];
                 }
             });
 
@@ -75,11 +75,11 @@ namespace Leettle.Data.Impl
         public List<T> OpenAndFetchScalarList<T>()
         {
             List<T> list = new List<T>();
-            Open(dr =>
+            Open(datasetReader =>
             {
-                while (dr.Next())
+                while (datasetReader.Next())
                 {
-                    list.Add((T)Convert.ChangeType(dr.DataReader[0], typeof(T)));
+                    list.Add((T)Convert.ChangeType(datasetReader.DataReader[0], typeof(T)));
                 }
             });
             return list;

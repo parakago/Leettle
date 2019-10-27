@@ -7,16 +7,15 @@ namespace Leettle.Data.Impl
 {
     class DatasetDataReader : IDatasetDataReader
     {
-        public DbDataReader DataReader { get; }
-        private readonly BindStrategy bindStrategy;
-        private object fieldPropMappings;
-        private object objectCreator;
+        public DbDataReader DataReader { get { return dataReaderWrapper.DataReader; } }
+        public DbDataReaderWrapper dataReaderWrapper;
+        private object objectBinder;
+
         private Dictionary<string, int> ordinalMappings;
 
-        public DatasetDataReader(DbDataReader dataReader, BindStrategy bindStrategy)
+        public DatasetDataReader(DbDataReaderWrapper dataReaderWrapper)
         {
-            this.DataReader = dataReader;
-            this.bindStrategy = bindStrategy;
+            this.dataReaderWrapper = dataReaderWrapper;
         }
 
         public bool Next()
@@ -85,44 +84,14 @@ namespace Leettle.Data.Impl
             GetStream(FindOrdinal(colName), stream);
         }
 
-        private static List<FieldPropMapping<T>> ExtractFieldMappingInfo<T>(DbDataReader reader, BindStrategy bindStrategy)
-        {
-            var fieldPropMappings = new List<FieldPropMapping<T>>(reader.FieldCount);
-
-            for (int i = 0; i < reader.FieldCount; ++i)
-            {
-                string columnName = reader.GetName(i);
-                string propertyName = bindStrategy.ToPropertyName(columnName);
-                var propertyInfo = LeettleDbUtil.FindProperty(typeof(T), propertyName);
-                if (propertyInfo != null)
-                {
-                    fieldPropMappings.Add(new FieldPropMapping<T>(i, propertyInfo));
-                }
-            }
-
-            return fieldPropMappings;
-        }
-
         public T Fetch<T>()
         {
-            if (fieldPropMappings == null)
+            if (objectBinder == null)
             {
-                fieldPropMappings = ExtractFieldMappingInfo<T>(DataReader, bindStrategy);
-                objectCreator = LeettleDbUtil.CreateObjectDefaultCreator<T>();
+                objectBinder = dataReaderWrapper.CreateObjectBinder<T>();
             }
 
-            T target = ((ObjectDefaultCreator<T>)objectCreator)();
-
-            foreach (var fieldPropMapping in (List<FieldPropMapping<T>>)fieldPropMappings)
-            {
-                object columnValue = DataReader.IsDBNull(fieldPropMapping.FieldIndex) ? null : DataReader.GetValue(fieldPropMapping.FieldIndex);
-                if (columnValue != null)
-                {
-                    fieldPropMapping.SetValue(target, columnValue);
-                }
-            }
-
-            return target;
+            return ((ObjectBinder<T>)objectBinder).BindNewObject(DataReader);
         }
 
         public object GetObject(int ordinal)
