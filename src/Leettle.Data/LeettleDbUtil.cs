@@ -1,9 +1,17 @@
 ﻿using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Leettle.Data
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public delegate T ObjectDefaultCreator<T>();
+
     /// <summary>
     /// 
     /// </summary>
@@ -100,6 +108,34 @@ namespace Leettle.Data
                 p = p.GetTypeInfo().BaseType;
             }
             return false;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static ObjectDefaultCreator<T> CreateObjectDefaultCreator<T>()
+        {
+            ConstructorInfo defaultConstructor = null;
+            foreach (var ctor in typeof(T).GetTypeInfo().DeclaredConstructors)
+            {
+                var pi = ctor.GetParameters();
+                if (pi == null || pi.Length == 0)
+                {
+                    defaultConstructor = ctor;
+                    break;
+                }
+            }
+
+            if (defaultConstructor == null)
+            {
+                throw new Exception("default constructor not found: " + typeof(T).FullName);
+            }
+
+            NewExpression newExp = Expression.New(defaultConstructor);
+            LambdaExpression lambda = Expression.Lambda(typeof(ObjectDefaultCreator<T>), newExp);
+            return (ObjectDefaultCreator<T>)lambda.Compile();
         }
     }
 }

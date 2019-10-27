@@ -10,6 +10,7 @@ namespace Leettle.Data.Impl
         public DbDataReader DataReader { get; }
         private readonly BindStrategy bindStrategy;
         private object fieldPropMappings;
+        private object objectCreator;
         private Dictionary<string, int> ordinalMappings;
 
         public DatasetDataReader(DbDataReader dataReader, BindStrategy bindStrategy)
@@ -107,9 +108,10 @@ namespace Leettle.Data.Impl
             if (fieldPropMappings == null)
             {
                 fieldPropMappings = ExtractFieldMappingInfo<T>(DataReader, bindStrategy);
+                objectCreator = LeettleDbUtil.CreateObjectDefaultCreator<T>();
             }
 
-            T target = (T)Activator.CreateInstance(typeof(T));
+            T target = ((ObjectDefaultCreator<T>)objectCreator)();
 
             foreach (var fieldPropMapping in (List<FieldPropMapping<T>>)fieldPropMappings)
             {
