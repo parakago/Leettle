@@ -48,7 +48,7 @@ namespace Leettle.Data
         /// <param name="paramName"></param>
         /// <param name="paramValue"></param>
         /// <returns></returns>
-        IDataset SetParam(String paramName, object paramValue);
+        IDataset SetParam(string paramName, object paramValue);
 
         /// <summary>
         /// 

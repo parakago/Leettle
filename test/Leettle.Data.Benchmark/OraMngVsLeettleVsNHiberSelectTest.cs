@@ -8,7 +8,6 @@ using System.Linq;
 
 namespace Leettle.Data.Benchmark
 {
-    [ClrJob]
     [KeepBenchmarkFiles]
     [AsciiDocExporter]
     [CsvExporter]

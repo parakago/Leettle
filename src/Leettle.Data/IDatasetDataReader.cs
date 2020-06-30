@@ -88,7 +88,7 @@ namespace Leettle.Data
         /// </summary>
         /// <param name="fieldName"></param>
         /// <param name="stream"></param>
-        void GetStream(String fieldName, Stream stream);
+        void GetStream(string fieldName, Stream stream);
 
         /// <summary>
         /// 
