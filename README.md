@@ -64,11 +64,11 @@ Check out [Getting Started](https://github.com/parakago/Leettle.Data/wiki/Gettin
 
 ## Performance Benchmarking Test
 
-|                             Method |      Mean |     Error |    StdDev | Ratio | RatioSD |
-|----------------------------------- |----------:|----------:|----------:|------:|--------:|
-|  Oracle Managed Data Direct Access |  25.34 ms | 0.2826 ms | 0.2644 ms |  1.00 |    0.00 |
-|                       Leettle.Data |  45.31 ms | 0.7139 ms | 0.6678 ms |  1.79 |    0.03 |
-|                         NHibernate | 138.17 ms | 2.7254 ms | 5.1853 ms |  5.47 |    0.21 |
+|                              Method |      Mean |    Error |   StdDev | Ratio | RatioSD |
+|------------------------------------ |----------:|---------:|---------:|------:|--------:|
+|                        Leettle.Data |  54.55 ms | 0.657 ms | 0.549 ms |  1.29 |    0.02 |
+|   Oracle Managed Data Direct Access |  42.42 ms | 0.464 ms | 0.387 ms |  1.00 |    0.00 |
+|                          NHibernate | 119.83 ms | 1.898 ms | 2.031 ms |  2.83 |    0.05 |
 
 ## Installation
 * install Leettle.Data package through the nuget.
